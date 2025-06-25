@@ -1,3 +1,5 @@
+// === Missbar Cafe - app.js ===
+
 const sheetURL = 'https://script.google.com/macros/s/AKfycbzuYVu7HgkCiiEpQajhGxqjSrMSDbUnFkCP05QGPRYp558pYXVU4TMUJ9pDSfCf_9BX/exec';
 let menus = [];
 let cart = [];
@@ -92,13 +94,13 @@ async function fetchMenus() {
     const res = await fetch(sheetURL);
     menus = await res.json();
     saveToLocal();
-    renderMenuList();
-    renderMenuTable();
+    if (document.getElementById('menuPage').classList.contains('active')) renderMenuList();
+    if (document.getElementById('kasirPage').classList.contains('active')) renderMenuTable();
   } catch (err) {
     alert("Gagal mengambil menu dari spreadsheet");
     menus = safeParse('menus', '[]');
-    renderMenuList();
-    renderMenuTable();
+    if (document.getElementById('menuPage').classList.contains('active')) renderMenuList();
+    if (document.getElementById('kasirPage').classList.contains('active')) renderMenuTable();
   }
 }
 
@@ -336,7 +338,7 @@ window.onload = () => {
   fetchMenus();
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   showPage(user ? 'menu' : 'login');
-  // Render nav highlight & isi awal
+  // Render nav highlight & isi awal jika sudah login
   if(user) {
     renderMenuList();
     renderMenuTable();
@@ -344,4 +346,33 @@ window.onload = () => {
     renderTempTrans();
     renderRekap();
   }
+};
+
+/* --- PATCH showPage agar render otomatis & nav bawah aktif --- */
+function setActiveNav(id) {
+  ['navMenu','navKasir','navRekap'].forEach(nid=>{
+    const el = document.getElementById(nid);
+    if(el) el.classList.remove('active');
+  });
+  if(id) {
+    const el = document.getElementById(id);
+    if(el) el.classList.add('active');
+  }
+}
+// OVERRIDE showPage agar SELALU render
+window.showPage = function(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const target = document.getElementById(id+'Page');
+  if(target) target.classList.add('active');
+  // Nav show/hide
+  const nav = document.getElementById('mainNav');
+  if(nav) nav.style.display = (id==='login'||id==='register') ? 'none' : '';
+  // Nav highlight
+  setActiveNav(id==='menu'?'navMenu':id==='kasir'?'navKasir':id==='rekap'?'navRekap':null);
+  // Render otomatis
+  if(id==='menu' && typeof renderMenuList==='function') renderMenuList();
+  if(id==='kasir' && typeof renderMenuTable==='function') renderMenuTable();
+  if(id==='kasir' && typeof renderCart==='function') renderCart();
+  if(id==='kasir' && typeof renderTempTrans==='function') renderTempTrans();
+  if(id==='rekap' && typeof renderRekap==='function') renderRekap();
 };
