@@ -124,6 +124,16 @@ function deleteMenu(i){
   renderMenuTable();
 }
 
+function addToCart(i, type) {
+  // ... kode lama ...
+  renderCart();
+  // Tambahan: scroll ke keranjang
+  setTimeout(() => {
+    const cart = document.getElementById('cartList');
+    if (cart) cart.scrollIntoView({behavior: 'smooth', block: 'center'});
+  }, 100);
+}
+
 // ========== MENU PAGE ==========
 function renderMenuList() {
   const menuList = document.getElementById('menuList');
