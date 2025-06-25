@@ -168,6 +168,35 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="number"]:foc
   border-color: #3b82f6;
   background: #fff;
 }
+#floatingCart {
+  position: sticky;
+  top: 0;
+  z-index: 11;
+  background: #fff;
+  box-shadow: 0 2px 8px #0002;
+  padding: 8px 0 4px 0;
+  margin-bottom: 12px;
+  border-radius: 0.7em;
+}
+.cart-total-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  margin-top: 4px;
+}
+.cart-checkout-btn {
+  background: var(--accent);
+  color: #fff;
+  font-size: 1.1em;
+  padding: .4em 1.2em;
+  border-radius: .6em;
+  margin-left: 1em;
+}
+.cart-list button {
+  font-size: 1.5em;
+  padding: .35em .85em;
+}
 
 /* 8. RESPONSIVE */
 @media (max-width: 600px) {
