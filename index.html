@@ -318,33 +318,43 @@
   <!-- SCRIPT -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script>
-    // Navigation State & Auto Show nav
-    function setActiveNav(id) {
-      ['navMenu','navKasir','navRekap'].forEach(nid=>{
-        document.getElementById(nid).classList.remove('active');
-      });
-      if(id) document.getElementById(id).classList.add('active');
+  // Patch agar render otomatis & nav bawah aktif
+  function setActiveNav(id) {
+    ['navMenu','navKasir','navRekap'].forEach(nid=>{
+      const el = document.getElementById(nid);
+      if(el) el.classList.remove('active');
+    });
+    if(id) {
+      const el = document.getElementById(id);
+      if(el) el.classList.add('active');
     }
-    window.showPage = function(id) {
-      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-      const target = document.getElementById(id+'Page');
-      if(target) target.classList.add('active');
-      // Nav show/hide
-      document.getElementById('mainNav').style.display =
-        (id==='login'||id==='register') ? 'none' : '';
-      // Active nav
-      setActiveNav(id==='menu'?'navMenu':id==='kasir'?'navKasir':id==='rekap'?'navRekap':null);
-      // Render otomatis
-      if(id==='menu' && typeof renderMenuList==='function') renderMenuList();
-      if(id==='kasir' && typeof renderMenuTable==='function') renderMenuTable();
-      if(id==='kasir' && typeof renderCart==='function') renderCart();
-      if(id==='kasir' && typeof renderTempTrans==='function') renderTempTrans();
-      if(id==='rekap' && typeof renderRekap==='function') renderRekap();
-    }
-    // Modal
-    function openCheckoutModal(){ document.getElementById('checkoutModal').style.display='flex'; }
-    function closeCheckoutModal(){ document.getElementById('checkoutModal').style.display='none'; }
-  </script>
+  }
+  // Ini override showPage dari app.js!
+  window.showPage = function(id) {
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    const target = document.getElementById(id+'Page');
+    if(target) target.classList.add('active');
+    // Nav show/hide
+    const nav = document.getElementById('mainNav');
+    if(nav) nav.style.display = (id==='login'||id==='register') ? 'none' : '';
+    // Active nav
+    setActiveNav(id==='menu'?'navMenu':id==='kasir'?'navKasir':id==='rekap'?'navRekap':null);
+    // Render otomatis
+    if(id==='menu' && typeof renderMenuList==='function') renderMenuList();
+    if(id==='kasir' && typeof renderMenuTable==='function') renderMenuTable();
+    if(id==='kasir' && typeof renderCart==='function') renderCart();
+    if(id==='kasir' && typeof renderTempTrans==='function') renderTempTrans();
+    if(id==='rekap' && typeof renderRekap==='function') renderRekap();
+  }
+  // Pastikan, saat fetchMenus selesai, jika sedang di halaman menu/kasir, render ulang!
+  const origFetchMenus = window.fetchMenus;
+  window.fetchMenus = async function() {
+    await origFetchMenus();
+    const active = document.querySelector('.page.active');
+    if(active && active.id==='menuPage' && typeof renderMenuList==='function') renderMenuList();
+    if(active && active.id==='kasirPage' && typeof renderMenuTable==='function') renderMenuTable();
+  }
+</script>
   <script src="app.js"></script>
 </body>
 </html>
