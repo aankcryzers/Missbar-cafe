@@ -106,7 +106,7 @@ function showPage(id) {
   console.log('showPage', id, 'target:', target);
   if (!target) return;
   target.classList.remove('hidden');
-setTimeout(() => target.classList.remove('opacity-0'), 10);
+  setTimeout(() => target.classList.remove('opacity-0'), 10);
   if (id === 'menu') renderMenuTable();
   if (id === 'kasir') { renderMenuList(); renderTempTrans(); }
 }
