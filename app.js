@@ -72,6 +72,7 @@ function showPage(id) {
     setTimeout(() => p.classList.add('hidden'), 300);
   });
   const target = document.getElementById(id + 'Page');
+  console.log('Menampilkan:', id + 'Page', 'target:', target);
   if (!target) return;
   target.classList.remove('hidden');
   setTimeout(() => target.classList.remove('opacity-0'), 10);
@@ -279,5 +280,7 @@ window.onload = () => {
   loadSavedData();
   fetchMenus();
   const user = JSON.parse(localStorage.getItem('user') || 'null');
+  console.log("user", user);
   showPage(user ? 'kasir' : 'login');
+};
 };
