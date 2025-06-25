@@ -36,14 +36,17 @@ function renderMenuList() {
     div.innerHTML = `
       <img src="${menu.gambar || 'icons/logo192.png'}" alt="${menu.nama}" class="w-full h-32 object-cover rounded mb-2">
       <h4 class="font-bold font-butter text-amber-700 text-lg text-center">${menu.nama}</h4>
-      <div class="flex justify-center gap-2 mt-2">
-        <button onclick="addToCart(${i}, 'hot')" class="bg-red-500 text-white px-3 py-2 rounded-full shadow text-lg">
-          <i class="fas fa-mug-hot"></i>
-        </button>
-        <button onclick="addToCart(${i}, 'cold')" class="bg-blue-500 text-white px-3 py-2 rounded-full shadow text-lg">
-          <i class="fas fa-ice-cream"></i>
-        </button>
-      </div>
+      <div class="flex gap-2 mt-2 justify-center">
+  <button onclick="addToCart(${i}, 'hot')"
+    class="bg-rose-300 hover:bg-rose-400 text-white px-4 py-2 rounded-full shadow-md transition duration-200 ease-in-out text-lg">
+    <i class="fas fa-mug-hot"></i>
+  </button>
+  <button onclick="addToCart(${i}, 'cold')"
+    class="bg-sky-300 hover:bg-sky-400 text-white px-4 py-2 rounded-full shadow-md transition duration-200 ease-in-out text-lg">
+    <i class="fas fa-ice-cream"></i>
+  </button>
+</div>
+
     `;
 
     menuList.appendChild(div);
