@@ -280,7 +280,21 @@ window.onload = () => {
   loadSavedData();
   fetchMenus();
   const user = JSON.parse(localStorage.getItem('user') || 'null');
-  console.log("user", user);
+  console.log('USER DI ONLOAD:', user);
   showPage(user ? 'kasir' : 'login');
 };
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.add('opacity-0');
+    setTimeout(() => p.classList.add('hidden'), 300);
+  });
+  const target = document.getElementById(id + 'Page');
+  console.log('showPage', id, 'target:', target);
+  if (!target) return;
+  target.classList.remove('hidden');
+  setTimeout(() => target.classList.remove('opacity-0'), 10);
+  if (id === 'menu') renderMenuTable();
+  if (id === 'kasir') { renderMenuList(); renderTempTrans(); }
+}
 };
