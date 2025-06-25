@@ -297,4 +297,3 @@ function showPage(id) {
   if (id === 'menu') renderMenuTable();
   if (id === 'kasir') { renderMenuList(); renderTempTrans(); }
 }
-};
