@@ -345,6 +345,7 @@ function renderTempTrans() {
     div.className = 'border p-2 rounded bg-white mb-2';
     div.innerHTML = `
       <div><strong>${trx.time}</strong> - <em>${trx.user}</em></div>
+<div id="tempTransList"></div>
       <ul class="text-sm">
         ${trx.items.map(item => `<li>${item.name} x${item.qty} = Rp ${item.qty * item.price}</li>`).join('')}
       </ul>
