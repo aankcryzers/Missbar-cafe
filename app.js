@@ -116,12 +116,7 @@ function saveMenuEdit(){
   closeMenuModal();
   renderMenuList();
   renderMenuTable();
-}
-function deleteMenu(i){
-  if(confirm("Hapus menu ini?")) menus.splice(i,1);
-  saveToLocal();
-  renderMenuList();
-  renderMenuTable();
+  closeCartPopup(); // otomatis tutup popup jika sedang terbuka
 }
 
 // ========== MENU PAGE ==========
@@ -189,7 +184,32 @@ function addToCart(i, type) {
   renderCart();
 }
 function renderCart() {
-  const list = document.getElementById('cartList');
+  updateCartBadge();
+}
+function removeFromCart(i) { cart.splice(i, 1); renderCart(); renderCartPopup(); }
+function increaseQty(i) { if (cart[i]) cart[i].qty++; renderCart(); renderCartPopup(); }
+function decreaseQty(i) { if (cart[i]) { if (cart[i].qty > 1) cart[i].qty--; else cart.splice(i, 1); } renderCart(); renderCartPopup(); }
+
+// ========== Keranjang Popup & Badge ==========
+function updateCartBadge() {
+  const badge = document.getElementById('cartBadge');
+  if(!badge) return;
+  const count = cart.reduce((n, i) => n + i.qty, 0);
+  badge.textContent = count;
+  badge.style.display = count > 0 ? '' : 'none';
+}
+
+function toggleCartPopup() {
+  renderCartPopup();
+  document.getElementById('cartPopup').classList.add('active');
+}
+function closeCartPopup(e) {
+  if (!e || e.target.id === 'cartPopup' || e.type === "keydown") {
+    document.getElementById('cartPopup').classList.remove('active');
+  }
+}
+function renderCartPopup() {
+  const list = document.getElementById('cartPopupList');
   if (!list) return;
   list.innerHTML = '';
   let total = 0;
@@ -199,20 +219,101 @@ function renderCart() {
       <li>
         <span>${item.name}</span>
         <span>
-          <button onclick="decreaseQty(${i})" class="btn" style="background:#eee;color:#444;padding:.1rem .7rem">-</button>
+          <button onclick="decreaseQty(${i});" class="btn" style="background:#eee;color:#444;padding:.1rem .7rem">-</button>
           x${item.qty}
-          <button onclick="increaseQty(${i})" class="btn" style="background:#eee;color:#444;padding:.1rem .7rem">+</button>
+          <button onclick="increaseQty(${i});" class="btn" style="background:#eee;color:#444;padding:.1rem .7rem">+</button>
         </span>
         <span>Rp ${item.price * item.qty}</span>
-        <button onclick="removeFromCart(${i})" class="btn" style="background:#e60023;padding:.1rem .7rem">🗑</button>
+        <button onclick="removeFromCart(${i});" class="btn" style="background:#e60023;padding:.1rem .7rem">🗑</button>
       </li>`;
   });
-  const totalEl = document.getElementById('cartTotal');
-  if (totalEl) totalEl.textContent = total;
+  document.getElementById('cartPopupTotal').textContent = total;
+  updateCartBadge();
 }
-function removeFromCart(i) { cart.splice(i, 1); renderCart(); }
-function increaseQty(i) { if (cart[i]) cart[i].qty++; renderCart(); }
-function decreaseQty(i) { if (cart[i]) { if (cart[i].qty > 1) cart[i].qty--; else cart.splice(i, 1); } renderCart(); }
+
+// Tutup popup dengan ESC keyboard
+document.addEventListener('keydown', function(e){
+  if(e.key === "Escape") closeCartPopup({target:{id:'cartPopup'}, type:"keydown"});
+});
+
+// Saat checkout: popup hilang, badge 0, transaksi dicatat, tempTrans update
+function checkoutCart() {
+  if (!cart.length) return alert("Keranjang kosong!");
+  const now = new Date();
+  const time = now.toLocaleTimeString('id-ID');
+  const date = now.toLocaleDateString('id-ID');
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  const trx = {
+    date,
+    time,
+    user: user?.username || 'anon',
+    items: JSON.parse(JSON.stringify(cart))
+  };
+  sales.push(trx);
+  tempTrans.unshift(trx);
+  saveToLocal();
+  renderTempTrans();
+
+  cart = [];
+  renderCart();
+  renderCartPopup();
+  document.getElementById('cartPopup').classList.remove('active');
+}
+
+// ========== Transaksi Sementara (Accordion) ==========
+function renderTempTrans() {
+  const list = document.getElementById('tempTransList');
+  if (!list) return;
+  list.innerHTML = '';
+  tempTrans.forEach((trx, i) => {
+    const detailId = `transDetail${i}`;
+    const collapsed = trx._collapsed === undefined ? true : trx._collapsed;
+    const div = document.createElement('div');
+    div.className = 'border p-2 rounded bg-white mb-2';
+    const totalTrx = trx.items.reduce((sum, it) => sum + it.qty * it.price, 0);
+    div.innerHTML = `
+      <div class="fw-bold" style="cursor:pointer;" onclick="toggleTransDetail(${i})">
+        ${trx.date} ${trx.time} - <em>${trx.user}</em>
+        <span style="float:right; color:var(--accent);font-size:1.2em;">${collapsed ? '+' : '−'}</span>
+      </div>
+      <div id="${detailId}" style="display:${collapsed ? 'none' : 'block'};margin-top:.5em;">
+        <ul class="text-sm">
+          ${trx.items.map(item => `<li>${item.name} x${item.qty} = Rp ${item.qty * item.price}</li>`).join('')}
+        </ul>
+        <div class="text-end fw-bold mb-2" style="text-align:right;">Total: Rp ${totalTrx}</div>
+        <button onclick="printSingleStruk(${i})" class="text-sm btn mt-2" style="background:var(--accent);">Cetak Struk</button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+function toggleTransDetail(i) {
+  tempTrans[i]._collapsed = !(tempTrans[i]._collapsed === undefined ? true : tempTrans[i]._collapsed);
+  renderTempTrans();
+}
+
+// ========== Cetak Struk ==========
+function printSingleStruk(index) {
+  const trx = tempTrans[index];
+  if (!trx) return;
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert("jsPDF belum dimuat!");
+    return;
+  }
+  const doc = new window.jspdf.jsPDF();
+  doc.setFontSize(14);
+  doc.text("Struk Pembelian", 10, 10);
+  doc.setFontSize(10);
+  doc.text(trx.date + ' ' + trx.time + ' - ' + trx.user, 10, 20);
+  let y = 30;
+  trx.items.forEach(item => {
+    doc.text(`${item.name} x${item.qty} = Rp ${item.qty * item.price}`, 10, y);
+    y += 8;
+  });
+  const total = trx.items.reduce((sum, i) => sum + i.qty * i.price, 0);
+  doc.text(`Total: Rp ${total}`, 10, y + 10);
+  doc.save('struk.pdf');
+}
 
 // ========== REKAP PAGE ==========
 function renderRekap() {
@@ -281,168 +382,6 @@ function renderRekap() {
     html += sorted.map(([tgl,d])=>`<tr><td>${tgl}</td><td>${d.count}</td><td>Rp ${d.total.toLocaleString()}</td></tr>`).join('');
     historyTable.innerHTML = html || '<tr><td colspan="3">Belum ada transaksi</td></tr>';
   }
-}
-
-// ========== Checkout Modal ==========
-function openCheckoutModal() {
-  if (!cart.length) return alert("Keranjang kosong!");
-  const modal = document.getElementById('checkoutModal');
-  const list = document.getElementById('checkoutList');
-  if (!modal || !list) return;
-  list.innerHTML = '';
-  let total = 0;
-  cart.forEach(item => {
-    total += item.qty * item.price;
-    list.innerHTML += `<li class="flex justify-between border-b py-1"><span>${item.name} x${item.qty}</span><span>Rp ${item.qty * item.price}</span></li>`;
-  });
-  const totalEl = document.getElementById('checkoutTotal');
-  if (totalEl) totalEl.textContent = total;
-  modal.style.display = 'flex';
-}
-function closeCheckoutModal() {
-  const modal = document.getElementById('checkoutModal');
-  if (modal) modal.style.display = 'none';
-}
-
-function updateCartBadge() {
-  const badge = document.getElementById('cartBadge');
-  if(!badge) return;
-  const count = cart.reduce((n, i) => n + i.qty, 0);
-  badge.textContent = count;
-  badge.style.display = count > 0 ? '' : 'none';
-}
-
-// POPUP LOGIC
-function toggleCartPopup() {
-  renderCartPopup();
-  document.getElementById('cartPopup').classList.add('active');
-}
-function closeCartPopup(e) {
-  if (!e || e.target.id === 'cartPopup' || e.type === "keydown") {
-    document.getElementById('cartPopup').classList.remove('active');
-  }
-}
-function renderCartPopup() {
-  const list = document.getElementById('cartPopupList');
-  if (!list) return;
-  list.innerHTML = '';
-  let total = 0;
-  cart.forEach((item, i) => {
-    total += item.price * item.qty;
-    list.innerHTML += `
-      <li>
-        <span>${item.name}</span>
-        <span>
-          <button onclick="decreaseQty(${i}); renderCartPopup();" class="btn" style="background:#eee;color:#444;padding:.1rem .7rem">-</button>
-          x${item.qty}
-          <button onclick="increaseQty(${i}); renderCartPopup();" class="btn" style="background:#eee;color:#444;padding:.1rem .7rem">+</button>
-        </span>
-        <span>Rp ${item.price * item.qty}</span>
-        <button onclick="removeFromCart(${i}); renderCartPopup();" class="btn" style="background:#e60023;padding:.1rem .7rem">🗑</button>
-      </li>`;
-  });
-  document.getElementById('cartPopupTotal').textContent = total;
-}
-
-// Tutup popup dengan ESC keyboard
-document.addEventListener('keydown', function(e){
-  if(e.key === "Escape") closeCartPopup({target:{id:'cartPopup'}, type:"keydown"});
-});
-
-// PASTIKAN renderCart() selalu update badge
-function renderCart() {
-  // ... isi renderCart lama kamu ...
-  updateCartBadge();
-}
-
-// Saat checkout: popup hilang otomatis dan badge jadi 0
-function checkoutCart() {
-  if (!cart.length) return alert("Keranjang kosong!");
-  // logic simpan transaksi kamu di sini
-  cart = [];
-  renderCart();
-  renderCartPopup();
-  document.getElementById('cartPopup').classList.remove('active');
-}
-
-// Otomatis tutup popup saat tambah menu
-function saveMenuEdit(){
-  // ... logic simpan menu ...
-  closeCartPopup(); // <--- tutup popup jika ada
-}
-
-
-// ========== Konfirmasi Checkout ==========
-async function confirmCheckout() {
-  const now = new Date();
-  const time = now.toLocaleTimeString('id-ID');
-  const date = now.toLocaleDateString('id-ID');
-  const user = JSON.parse(localStorage.getItem('user') || 'null');
-  const trx = {
-    date, time, user: user?.username || 'anon',
-    items: JSON.parse(JSON.stringify(cart))
-  };
-  sales.push(trx);
-  tempTrans.unshift(trx);
-  saveToLocal();
-  // (opsional) Kirim ke Google Sheet
-  /*
-  const form = new FormData();
-  form.append("action", "transaksi");
-  form.append("data", JSON.stringify(trx));
-  try {
-    await fetch(sheetURL, { method: 'POST', body: form });
-    alert("Berhasil disimpan!");
-  } catch (e) {
-    alert("Tersimpan lokal, gagal upload.");
-  }
-  */
-  cart = [];
-  renderCart();
-  renderTempTrans();
-  closeCheckoutModal();
-}
-
-// ========== Transaksi Sementara (Struk) ==========
-function renderTempTrans() {
-  const list = document.getElementById('tempTransList');
-  if (!list) return;
-  list.innerHTML = '';
-  tempTrans.forEach((trx, i) => {
-    const div = document.createElement('div');
-    div.className = 'border p-2 rounded bg-white mb-2';
-    div.innerHTML = `
-      <div><strong>${trx.time}</strong> - <em>${trx.user}</em></div>
-      <ul class="text-sm">
-        ${trx.items.map(item => `<li>${item.name} x${item.qty} = Rp ${item.qty * item.price}</li>`).join('')}
-      </ul>
-      <button onclick="printSingleStruk(${i})" class="text-sm btn mt-2" style="background:var(--accent);">Cetak Struk</button>
-    `;
-    list.appendChild(div);
-  });
-}
-
-// ========== Cetak Struk ==========
-function printSingleStruk(index) {
-  const trx = tempTrans[index];
-  if (!trx) return;
-  if (!window.jspdf || !window.jspdf.jsPDF) {
-    alert("jsPDF belum dimuat!");
-    return;
-  }
-  const doc = new window.jspdf.jsPDF();
-  doc.setFontSize(14);
-  doc.text("Struk Pembelian", 10, 10);
-  doc.setFontSize(10);
-  doc.text(trx.time + ' - ' + trx.user, 10, 20);
-  let y = 30;
-  trx.items.forEach(item => {
-    doc.text(`${item.name} x${item.qty} = Rp ${item.qty * item.price}`, 10, y);
-    y += 8;
-  });
-  const total = trx.items.reduce((sum, i) => sum + i.qty * i.price, 0);
-  doc.text(`Total: Rp ${total}`, 10, y + 10);
-  doc.save('struk.pdf');
 }
 
 // ========== ONLOAD ==========
