@@ -255,14 +255,14 @@
     <div class="container">
       <h2 class="font-cafe text-center mb-4" style="color:var(--accent)">Kasir</h2>
       <div id="menuTable" class="menu-table mb-4"></div>
-      <h3 class="fw-bold mb-2">Keranjang</h3>
-      <ul id="cartList" class="cart-list mb-2"></ul>
-      <p class="fw-bold">Total: Rp <span id="cartTotal">0</span></p>
-      <button onclick="openCheckoutModal()" class="btn w-full mt-2" style="background:var(--accent)">Checkout</button>
-      <h3 class="fw-bold mt-6 mb-2">Transaksi Terakhir</h3>
-      <div id="tempTransList"></div>
-    </div>
+       <h3 class="fw-bold mb-2">Keranjang</h3>
+<div id="floatingCart">
+  <ul id="cartList" class="cart-list mb-2"></ul>
+  <div class="cart-total-info">
+    <span>Total: Rp <span id="cartTotal">0</span></span>
+    <button onclick="openCheckoutModal()" class="btn cart-checkout-btn">Checkout</button>
   </div>
+</div>
 
   <!-- REKAP -->
   <div id="rekapPage" class="page">
