@@ -1,5 +1,3 @@
-// app.js FINAL - CLEARED & IMPROVED
-
 const sheetURL = 'https://script.google.com/macros/s/AKfycbzuYVu7HgkCiiEpQajhGxqjSrMSDbUnFkCP05QGPRYp558pYXVU4TMUJ9pDSfCf_9BX/exec';
 let menus = [];
 let cart = [];
@@ -7,11 +5,13 @@ let sales = [];
 let tempTrans = [];
 let currentUser = null;
 
-// Simpan user di localStorage (hanya untuk demo! Jangan untuk produksi)
 function registerUser() {
-  const username = document.getElementById('regUsername').value;
+  const username = document.getElementById('regUsername').value.trim();
   const password = document.getElementById('regPassword').value;
-  if (!username || !password) return alert("Semua field wajib diisi!");
+  if (!username || !password) {
+    alert("Username dan password wajib diisi!");
+    return;
+  }
   let users = JSON.parse(localStorage.getItem('users') || '[]');
   if (users.find(u => u.username === username)) {
     alert("Username sudah terdaftar!");
@@ -22,43 +22,41 @@ function registerUser() {
   alert("Registrasi berhasil! Silakan login.");
   showPage('login');
 }
-function handleGoogleLogin(response) {
-  // Proses response Google
-}
+
 function loginUser() {
-  const username = document.getElementById('loginUsername').value;
+  const username = document.getElementById('loginUsername').value.trim();
   const password = document.getElementById('loginPassword').value;
+  if (!username || !password) {
+    alert("Username dan password wajib diisi!");
+    return;
+  }
   let users = JSON.parse(localStorage.getItem('users') || '[]');
   const user = users.find(u => u.username === username && u.password === password);
-  if (!user) return alert("Username atau password salah!");
+  if (!user) {
+    alert("Username atau password salah!");
+    return;
+  }
   localStorage.setItem('user', JSON.stringify({ username }));
   alert('Login sukses!');
   showPage('kasir');
 }
 
-// Handler Google Sign-In
-function handleGoogleLogin(response) {
-  // Mendekode JWT untuk mengambil email/nama (gunakan library jwt-decode atau manual parse)
-  const id_token = response.credential;
-  const payload = JSON.parse(atob(id_token.split('.')[1]));
-  localStorage.setItem('user', JSON.stringify({ username: payload.name, email: payload.email }));
-  alert('Login Google sukses sebagai ' + payload.email);
-  showPage('kasir');
+function logoutUser() {
+  localStorage.removeItem('user');
+  showPage('login');
 }
-// Helper for safe JSON parse
+
 function safeParse(key, fallback) {
   try {
     return JSON.parse(localStorage.getItem(key) || fallback);
   } catch { return fallback === 'null' ? null : JSON.parse(fallback); }
 }
 
-// Load data from localStorage
 function loadSavedData() {
   sales = safeParse('sales', '[]');
   tempTrans = safeParse('tempTrans', '[]');
   currentUser = safeParse('user', 'null');
 }
-loadSavedData();
 
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => {
@@ -71,7 +69,6 @@ function showPage(id) {
   setTimeout(() => target.classList.remove('opacity-0'), 10);
   if (id === 'menu') renderMenuTable();
   if (id === 'kasir') { renderMenuList(); renderTempTrans(); }
-  if (id === 'rekap') renderRekap?.();
 }
 
 async function fetchMenus() {
@@ -83,7 +80,6 @@ async function fetchMenus() {
     renderMenuTable();
   } catch (err) {
     alert("Gagal mengambil menu dari spreadsheet");
-    console.error(err);
     menus = safeParse('menus', '[]');
     renderMenuList();
     renderMenuTable();
@@ -109,10 +105,10 @@ function renderMenuList() {
       <h4 class="font-bold font-diary text-pink-700 text-lg">${menu.nama || 'Tanpa Nama'}</h4>
       <div class="flex gap-2 mt-2 justify-center">
         <button onclick="addToCart(${i}, 'hot')" class="bg-rose-300 text-white px-3 py-2 rounded-full shadow text-lg">
-          <i class="fas fa-mug-hot"></i>
+          <span>&#9749;</span>
         </button>
         <button onclick="addToCart(${i}, 'cold')" class="bg-sky-300 text-white px-3 py-2 rounded-full shadow text-lg">
-          <i class="fas fa-ice-cream"></i>
+          <span>&#127846;</span>
         </button>
       </div>`;
     menuList.appendChild(div);
@@ -209,8 +205,9 @@ async function confirmCheckout() {
   const now = new Date();
   const time = now.toLocaleTimeString('id-ID');
   const date = now.toLocaleDateString('id-ID');
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
   const trx = {
-    date, time, user: currentUser?.email || 'anon',
+    date, time, user: user?.username || 'anon',
     items: JSON.parse(JSON.stringify(cart))
   };
   sales.push(trx);
@@ -270,21 +267,9 @@ function printSingleStruk(index) {
   doc.save('struk.pdf');
 }
 
-function loginUser(email) {
-  currentUser = { email };
-  saveToLocal();
-  alert('Login sukses sebagai ' + email);
-  showPage('kasir');
-}
-
-function logoutUser() {
-  currentUser = null;
-  localStorage.removeItem('user');
-  location.reload();
-}
-
 window.onload = () => {
   loadSavedData();
   fetchMenus();
-  showPage(currentUser ? 'kasir' : 'login');
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  showPage(user ? 'kasir' : 'login');
 };
