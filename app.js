@@ -22,7 +22,9 @@ function registerUser() {
   alert("Registrasi berhasil! Silakan login.");
   showPage('login');
 }
-
+function handleGoogleLogin(response) {
+  // Proses response Google
+}
 function loginUser() {
   const username = document.getElementById('loginUsername').value;
   const password = document.getElementById('loginPassword').value;
