@@ -33,7 +33,7 @@ function renderMenuList() {
     div.className = 'border p-2 rounded shadow bg-white';
     div.innerHTML = `
       <img src="${menu.gambar}" class="w-full h-32 object-cover rounded mb-2">
-      <h4 class="font-bold">${menu.nama}</h4>
+      <h4 class="font-bold font-butter text-amber-700 text-lg">${menu.nama}</h4>
       <div class="flex gap-1 mt-2">
         <button onclick="addToCart(${i}, 'hot')" class="bg-red-500 text-white px-2 py-1 rounded text-sm">Panas</button>
         <button onclick="addToCart(${i}, 'cold')" class="bg-blue-500 text-white px-2 py-1 rounded text-sm">Es</button>
@@ -50,7 +50,7 @@ function renderMenuTable() {
     div.className = 'border p-2 bg-white rounded shadow';
     div.innerHTML = `
       <img src="${menu.gambar}" class="w-full h-24 object-cover rounded mb-2">
-      <h4 class="font-bold">${menu.nama}</h4>
+      <h4 class="font-bold font-butter text-amber-700 text-lg">${menu.nama}</h4>
       <p>Panas: Rp ${menu.hargapanas}</p>
       <p>Es: Rp ${menu.hargaes}</p>`;
     menuTable.appendChild(div);
