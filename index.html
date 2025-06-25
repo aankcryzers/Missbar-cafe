@@ -27,20 +27,7 @@
   </style>
 </head>
 <body>
-<!-- Register Page -->
-<div id="registerPage" class="page hidden">
-  <div class="p-8 text-center max-w-sm mx-auto mt-20 bg-white rounded shadow">
-    <h1 class="text-3xl font-diary text-gray-700 mb-4">Daftar Akun MissBar</h1>
-    <form id="registerForm" onsubmit="event.preventDefault(); registerUser();">
-      <label for="regUsername" class="block mb-2 text-gray-800">Username</label>
-      <input id="regUsername" type="text" placeholder="Username" class="p-2 border rounded w-full mb-4" required />
-      <label for="regPassword" class="block mb-2 text-gray-800">Password</label>
-      <input id="regPassword" type="password" placeholder="Password" class="p-2 border rounded w-full mb-4" required />
-      <button type="submit" class="bg-blue-600 text-white btn w-full">Daftar</button>
-    </form>
-    <p class="mt-2">Sudah punya akun? <a href="#" onclick="showPage('login')" class="text-blue-500 underline">Login</a></p>
-  </div>
-</div>
+
 <!-- Login Page -->
 <div id="loginPage" class="page">
   <div class="p-8 text-center max-w-sm mx-auto mt-20 bg-white rounded shadow">
@@ -69,6 +56,21 @@
       data-logo_alignment="left">
     </div>
     <p class="mt-2">Belum punya akun? <a href="#" onclick="showPage('register')" class="text-blue-500 underline">Daftar</a></p>
+  </div>
+</div>
+
+  <!-- Register Page -->
+<div id="registerPage" class="page hidden">
+  <div class="p-8 text-center max-w-sm mx-auto mt-20 bg-white rounded shadow">
+    <h1 class="text-3xl font-diary text-gray-700 mb-4">Daftar Akun MissBar</h1>
+    <form id="registerForm" onsubmit="event.preventDefault(); registerUser();">
+      <label for="regUsername" class="block mb-2 text-gray-800">Username</label>
+      <input id="regUsername" type="text" placeholder="Username" class="p-2 border rounded w-full mb-4" required />
+      <label for="regPassword" class="block mb-2 text-gray-800">Password</label>
+      <input id="regPassword" type="password" placeholder="Password" class="p-2 border rounded w-full mb-4" required />
+      <button type="submit" class="bg-blue-600 text-white btn w-full">Daftar</button>
+    </form>
+    <p class="mt-2">Sudah punya akun? <a href="#" onclick="showPage('login')" class="text-blue-500 underline">Login</a></p>
   </div>
 </div>
 
