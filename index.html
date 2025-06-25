@@ -14,9 +14,11 @@
     .font-diary { font-family: 'Segoe Script', cursive; }
     body { font-family: 'Segoe UI', sans-serif; background: #f8fafc; margin: 0; }
     .page { padding-bottom: 5rem; transition: opacity 0.2s; }
-    .hidden { display: none; }
+    .hidden { display: none !important; }
     .btn { padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; }
     .modal-bg { background: rgba(0,0,0,0.4); }
+    nav { margin-bottom: 1rem; }
+    nav button { margin-right: 0.5rem; }
   </style>
 </head>
 <body>
@@ -69,8 +71,12 @@
   <!-- Kasir Page -->
   <div id="kasirPage" class="page hidden">
     <div class="p-4 text-center">
-      <h1 class="text-3xl font-diary text-gray-700">Menu</h1>
-      <button onclick="logoutUser()" class="text-sm text-red-600 underline">Logout</button>
+      <h1 class="text-3xl font-diary text-gray-700">Kasir MissBar</h1>
+      <nav>
+        <button onclick="showPage('kasir')" class="text-blue-600 underline">Kasir</button>
+        <button onclick="showPage('rekap')" class="text-blue-600 underline">Rekap</button>
+        <button onclick="logoutUser()" class="text-red-600 underline">Logout</button>
+      </nav>
     </div>
     <div id="menuList" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 px-4"></div>
     <div id="menuTable" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 px-4"></div>
@@ -88,6 +94,21 @@
     </div>
   </div>
 
+  <!-- Rekap Page -->
+  <div id="rekapPage" class="page hidden">
+    <div class="p-4 text-center">
+      <h1 class="text-3xl font-diary text-gray-700">Rekap Penjualan</h1>
+      <nav>
+        <button onclick="showPage('kasir')" class="text-blue-600 underline">Kasir</button>
+        <button onclick="showPage('rekap')" class="text-blue-600 underline">Rekap</button>
+        <button onclick="logoutUser()" class="text-red-600 underline">Logout</button>
+      </nav>
+    </div>
+    <div class="p-4">
+      <div id="rekapContent"></div>
+    </div>
+  </div>
+
   <!-- Modal Checkout -->
   <div id="checkoutModal" class="fixed inset-0 modal-bg hidden flex items-center justify-center z-50">
     <div class="bg-white p-4 rounded w-80 shadow-xl mx-auto">
@@ -101,6 +122,38 @@
     </div>
   </div>
 
+  <script>
+    // Contoh fungsi renderRekap (harus ada juga di app.js kamu)
+    function renderRekap() {
+      const el = document.getElementById('rekapContent');
+      if (!el) return;
+      let sales = JSON.parse(localStorage.getItem('sales') || '[]');
+      if (!sales.length) {
+        el.innerHTML = '<div class="text-gray-600">Belum ada transaksi</div>';
+        return;
+      }
+      el.innerHTML = sales.map(trx => `
+        <div class="border rounded p-2 mb-2 bg-white text-left">
+          <div class="font-bold">${trx.date} ${trx.time} - ${trx.user}</div>
+          <ul class="text-sm mb-1">
+            ${trx.items.map(item => `<li>${item.name} x${item.qty} = Rp ${item.qty * item.price}</li>`).join('')}
+          </ul>
+          <div class="font-bold">Total: Rp ${trx.items.reduce((sum, i) => sum + i.qty * i.price, 0)}</div>
+        </div>
+      `).join('');
+    }
+
+    // Patch showPage agar renderRekap terpanggil
+    const origShowPage = window.showPage;
+    window.showPage = function(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+      const target = document.getElementById(id + 'Page');
+      if (target) {
+        target.classList.remove('hidden');
+        if (id === 'rekap') renderRekap();
+      }
+    }
+  </script>
   <!-- app.js selalu di paling bawah -->
   <script src="app.js"></script>
 </body>
