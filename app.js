@@ -201,6 +201,42 @@ function decreaseQty(i) {
   renderCart();
 }
 
+function renderRekap() {
+  // Ambil periode dari input
+  const start = document.getElementById('rekapStart').value;
+  const end = document.getElementById('rekapEnd').value;
+  let data = sales;
+  if (start && end) {
+    data = data.filter(trx =>
+      trx.date >= start && trx.date <= end
+    );
+  }
+  // Hitung penjualan per item
+  const penjualan = {};
+  data.forEach(trx => trx.items.forEach(item => {
+    penjualan[item.name] = (penjualan[item.name] || 0) + item.qty;
+  }));
+  // Top 10
+  const top10 = Object.entries(penjualan)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,10);
+  // Tampilkan list
+  const topList = document.getElementById('top10List');
+  topList.innerHTML = top10.map(([name,jml]) =>
+    `<li>${name} <b>x${jml}</b> (${((jml/Object.values(penjualan).reduce((a,b)=>a+b,0))*100).toFixed(1)}%)</li>`
+  ).join('');
+  // Chart
+  const ctx = document.getElementById('rekapChart').getContext('2d');
+  if(window.rekapChartObj) window.rekapChartObj.destroy();
+  window.rekapChartObj = new Chart(ctx, {
+    type:'bar',
+    data: {
+      labels: top10.map(([name])=>name),
+      datasets: [{ label:'Penjualan', data: top10.map(([_,jml])=>jml), backgroundColor:'#fbbf24' }]
+    }
+  });
+}
+
 // --- Checkout Modal ---
 function openCheckoutModal() {
   if (!cart.length) return alert("Keranjang kosong!");
