@@ -28,19 +28,28 @@ function saveToLocal() {
 function renderMenuList() {
   const menuList = document.getElementById('menuList');
   menuList.innerHTML = '';
+
   menus.forEach((menu, i) => {
     const div = document.createElement('div');
     div.className = 'border p-2 rounded shadow bg-white';
+
     div.innerHTML = `
-      <img src="${menu.gambar}" class="w-full h-32 object-cover rounded mb-2">
-      <h4 class="font-bold font-butter text-amber-700 text-lg">${menu.nama}</h4>
-      <div class="flex gap-1 mt-2">
-        <button onclick="addToCart(${i}, 'hot')" class="bg-red-500 text-white px-2 py-1 rounded text-sm">Panas</button>
-        <button onclick="addToCart(${i}, 'cold')" class="bg-blue-500 text-white px-2 py-1 rounded text-sm">Es</button>
-      </div>`;
+      <img src="${menu.gambar || 'icons/logo192.png'}" alt="${menu.nama}" class="w-full h-32 object-cover rounded mb-2">
+      <h4 class="font-bold font-butter text-amber-700 text-lg text-center">${menu.nama}</h4>
+      <div class="flex justify-center gap-2 mt-2">
+        <button onclick="addToCart(${i}, 'hot')" class="bg-red-500 text-white px-3 py-2 rounded-full shadow text-lg">
+          <i class="fas fa-mug-hot"></i>
+        </button>
+        <button onclick="addToCart(${i}, 'cold')" class="bg-blue-500 text-white px-3 py-2 rounded-full shadow text-lg">
+          <i class="fas fa-ice-cream"></i>
+        </button>
+      </div>
+    `;
+
     menuList.appendChild(div);
   });
 }
+
 
 function renderMenuTable() {
   const menuTable = document.getElementById('menuTable');
