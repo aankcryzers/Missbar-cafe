@@ -7,6 +7,42 @@ let sales = [];
 let tempTrans = [];
 let currentUser = null;
 
+// Simpan user di localStorage (hanya untuk demo! Jangan untuk produksi)
+function registerUser() {
+  const username = document.getElementById('regUsername').value;
+  const password = document.getElementById('regPassword').value;
+  if (!username || !password) return alert("Semua field wajib diisi!");
+  let users = JSON.parse(localStorage.getItem('users') || '[]');
+  if (users.find(u => u.username === username)) {
+    alert("Username sudah terdaftar!");
+    return;
+  }
+  users.push({ username, password });
+  localStorage.setItem('users', JSON.stringify(users));
+  alert("Registrasi berhasil! Silakan login.");
+  showPage('login');
+}
+
+function loginUser() {
+  const username = document.getElementById('loginUsername').value;
+  const password = document.getElementById('loginPassword').value;
+  let users = JSON.parse(localStorage.getItem('users') || '[]');
+  const user = users.find(u => u.username === username && u.password === password);
+  if (!user) return alert("Username atau password salah!");
+  localStorage.setItem('user', JSON.stringify({ username }));
+  alert('Login sukses!');
+  showPage('kasir');
+}
+
+// Handler Google Sign-In
+function handleGoogleLogin(response) {
+  // Mendekode JWT untuk mengambil email/nama (gunakan library jwt-decode atau manual parse)
+  const id_token = response.credential;
+  const payload = JSON.parse(atob(id_token.split('.')[1]));
+  localStorage.setItem('user', JSON.stringify({ username: payload.name, email: payload.email }));
+  alert('Login Google sukses sebagai ' + payload.email);
+  showPage('kasir');
+}
 // Helper for safe JSON parse
 function safeParse(key, fallback) {
   try {
