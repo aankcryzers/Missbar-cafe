@@ -157,9 +157,19 @@ function renderMenuTable() {
     div.innerHTML = `
       <img src="${menu.gambar || 'https://via.placeholder.com/120'}" alt="menu">
       <div class="fw-bold mb-1" style="color:var(--accent)">${menu.nama || 'Tanpa Nama'}</div>
-      <div class="mb-1">
-        <button onclick="addToCart(${i}, 'hot')" class="btn" style="background:var(--primary);">Panas<br>Rp ${menu.hargapanas || '-'}</button>
-        <button onclick="addToCart(${i}, 'cold')" class="btn" style="background:var(--accent);">Es<br>Rp ${menu.hargaes || '-'}</button>
+      <div class="flex gap-4 justify-center mt-2 mb-1">
+        <div style="text-align:center">
+          <span onclick="addToCart(${i}, 'hot')" title="Tambah Panas" style="cursor:pointer;font-size:2rem;color:#e60023;vertical-align:middle;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 4C12 4 16 9 16 13a4 4 0 1 1-8 0c0-4 4-9 4-9z" stroke="#e60023" stroke-width="2" fill="none"/><circle cx="12" cy="17" r="1.2" fill="#e60023"/></svg>
+          </span>
+          <div class="text-xs mt-1">Panas<br><b>Rp ${menu.hargapanas || '-'}</b></div>
+        </div>
+        <div style="text-align:center">
+          <span onclick="addToCart(${i}, 'cold')" title="Tambah Es" style="cursor:pointer;font-size:2rem;color:#3498db;vertical-align:middle;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 3c5 2 7 7.5 7 9.5a7 7 0 1 1-14 0C5 10.5 7 5 12 3z" stroke="#3498db" stroke-width="2" fill="none"/><circle cx="12" cy="17" r="1.2" fill="#3498db"/></svg>
+          </span>
+          <div class="text-xs mt-1">Es<br><b>Rp ${menu.hargaes || '-'}</b></div>
+        </div>
       </div>
     `;
     menuTable.appendChild(div);
