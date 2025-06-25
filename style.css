@@ -245,8 +245,6 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="number"]:foc
   .p-8 { padding: 1rem !important; }
 }
 
-
-
 /* 9. PRINT STRUK - KECILKAN */
 @media print {
   body, .page, #loginPage, #kasirPage, #menuPage {
