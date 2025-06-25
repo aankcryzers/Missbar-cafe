@@ -4,104 +4,73 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MissBar Cafe</title>
+
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icons/logo192.png" />
-  <link rel="stylesheet" href="style.css">
   <meta name="theme-color" content="#ffffff" />
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <!-- Google Sign-In HARUS sebelum app.js -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <style>
     @font-face {
       font-family: 'BeautyDiary';
       src: url('fonts/BeautyDiary.ttf') format('truetype');
     }
+
     .font-diary { font-family: 'BeautyDiary', cursive; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f8fafc; margin: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8fafc;
+      margin: 0;
+    }
+
+    .hidden { display: none; }
     .page { padding-bottom: 5rem; transition: opacity 0.3s ease; }
     .opacity-0 { opacity: 0; }
+
     .btn { padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; }
-    .hidden { display: none; }
   </style>
 </head>
 <body>
 
 <!-- Login Page -->
 <div id="loginPage" class="page">
-  <div class="p-8 text-center max-w-sm mx-auto mt-20 bg-white rounded shadow">
-    <h1 class="text-4xl font-diary text-gray-700 mb-4">Login MissBar ☕</h1>
-    <form id="loginForm" onsubmit="event.preventDefault(); loginUser();">
-      <label for="loginUsername" class="block mb-2 text-gray-800">Username</label>
-      <input id="loginUsername" type="text" placeholder="Username" class="p-2 border rounded w-full mb-4" required />
-      <label for="loginPassword" class="block mb-2 text-gray-800">Password</label>
-      <input id="loginPassword" type="password" placeholder="Password" class="p-2 border rounded w-full mb-4" required />
-      <button type="submit" class="bg-gray-800 text-white btn w-full">Login</button>
-    </form>
-    <div class="my-4">atau</div>
-    <div id="g_id_onload"
-      data-client_id="596031852783-5pb20oelemtr7g7sdcmh8ievc4pgnuv1.apps.googleusercontent.com"
-      data-context="signin"
-      data-ux_mode="popup"
-      data-callback="handleGoogleLogin"
-      data-auto_prompt="false">
-    </div>
-    <div class="g_id_signin"
-      data-type="standard"
-      data-shape="rectangular"
-      data-theme="outline"
-      data-text="sign_in_with"
-      data-size="large"
-      data-logo_alignment="left">
-    </div>
-    <p class="mt-2">Belum punya akun? <a href="#" onclick="showPage('register')" class="text-blue-500 underline">Daftar</a></p>
-  </div>
-</div>
-
-  <!-- Register Page -->
-<div id="registerPage" class="page hidden">
-  <div class="p-8 text-center max-w-sm mx-auto mt-20 bg-white rounded shadow">
-    <h1 class="text-3xl font-diary text-gray-700 mb-4">Daftar Akun MissBar</h1>
-    <form id="registerForm" onsubmit="event.preventDefault(); registerUser();">
-      <label for="regUsername" class="block mb-2 text-gray-800">Username</label>
-      <input id="regUsername" type="text" placeholder="Username" class="p-2 border rounded w-full mb-4" required />
-      <label for="regPassword" class="block mb-2 text-gray-800">Password</label>
-      <input id="regPassword" type="password" placeholder="Password" class="p-2 border rounded w-full mb-4" required />
-      <button type="submit" class="bg-blue-600 text-white btn w-full">Daftar</button>
-    </form>
-    <p class="mt-2">Sudah punya akun? <a href="#" onclick="showPage('login')" class="text-blue-500 underline">Login</a></p>
+  <div class="p-8 text-center">
+    <h1 class="text-4xl font-diary text-pink-700 mb-4">Selamat Datang di MissBar ☕</h1>
+    <input id="emailInput" type="email" placeholder="Masukkan Email" class="p-2 border rounded w-full max-w-sm" />
+    <button onclick="loginUser(document.getElementById('emailInput').value)" class="bg-pink-600 text-white btn mt-4">Login</button>
   </div>
 </div>
 
 <!-- Kasir Page -->
 <div id="kasirPage" class="page hidden">
   <div class="p-4 text-center">
-    <h1 class="text-3xl font-diary text-gray-700">Menu</h1>
-    <button onclick="logoutUser()" class="text-sm text-red-600 underline">Logout</button>
+    <h1 class="text-3xl font-diary text-pink-700">Menu</h1>
+    <button onclick="logoutUser()" class="text-sm text-red-500 underline">Logout</button>
   </div>
   <div id="menuList" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 px-4"></div>
-  <div id="menuTable" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 px-4"></div>
 
   <div class="p-4">
-    <h2 class="font-diary text-2xl text-center text-yellow-700">Keranjang</h2>
+    <h2 class="font-diary text-2xl text-center text-amber-700">Keranjang</h2>
     <ul id="cartList" class="my-4"></ul>
     <p class="text-center font-bold">Total: Rp <span id="cartTotal">0</span></p>
     <button onclick="openCheckoutModal()" class="bg-green-600 text-white btn w-full mt-2">Checkout</button>
   </div>
 
   <div class="p-4">
-    <h2 class="font-diary text-xl text-center text-yellow-700">Transaksi Terakhir</h2>
+    <h2 class="font-diary text-xl text-center text-amber-700">Transaksi Terakhir</h2>
     <div id="tempTransList"></div>
   </div>
 </div>
 
 <!-- Modal Checkout -->
-<div id="checkoutModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-  <div class="bg-white p-4 rounded w-80 shadow-xl mx-auto">
+<div id="checkoutModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center">
+  <div class="bg-white p-4 rounded w-80 shadow-xl">
     <h2 class="text-lg font-bold text-center mb-2">Konfirmasi Pembelian</h2>
     <ul id="checkoutList" class="text-sm max-h-40 overflow-y-auto mb-2"></ul>
-    <p class="font-bold text-center text-gray-700">TOTAL: Rp <span id="checkoutTotal"></span></p>
+    <p class="font-bold text-center text-pink-600">TOTAL: Rp <span id="checkoutTotal"></span></p>
     <div class="mt-4 flex justify-between">
       <button onclick="confirmCheckout()" class="bg-blue-500 text-white px-4 py-1 rounded">OK</button>
       <button onclick="closeCheckoutModal()" class="bg-gray-300 px-4 py-1 rounded">Batal</button>
@@ -109,7 +78,6 @@
   </div>
 </div>
 
-<!-- app.js selalu di paling bawah -->
 <script src="app.js"></script>
 </body>
 </html>
