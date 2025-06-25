@@ -1,65 +1,118 @@
-<!-- index.html FINAL -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MISS BAR</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#ffffff">
-  <link rel="icon" href="icons/logo192.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MISSBAR</title>
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="icon" href="icons/logo192.png" />
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- TailwindCSS & ChartJS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- Custom Font -->
   <style>
-    body { background-color: #f8fafc; }
-    .fixed-nav { position: fixed; bottom: 0; width: 100%; }
-    .hidden { display: none; }
-    .page { padding-bottom: 4rem; }
+    @font-face {
+      font-family: 'ButterChicken';
+      src: url('fonts/ButterChickenRegular.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    .font-butter {
+      font-family: 'ButterChicken', cursive;
+    }
+
+    body {
+      background-color: #f8fafc;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .page {
+      padding-bottom: 5rem;
+    }
+
+    .fixed-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: white;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid #e5e7eb;
+      padding: 0.75rem 0;
+      z-index: 50;
+    }
+
+    .nav-btn {
+      font-size: 0.875rem;
+      text-align: center;
+      color: #6b7280;
+    }
+
+    .nav-btn.active {
+      color: #10b981;
+      font-weight: bold;
+    }
   </style>
 </head>
+
 <body class="font-sans">
+  <!-- Halaman Kasir -->
   <div id="kasirPage" class="page">
-    <h1 class="text-xl font-bold p-4">Kasir</h1>
-    <div id="menuList" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 px-4"></div>
+    <h1 class="text-4xl text-center font-butter text-amber-700 mt-4">Kasir</h1>
+    <div id="menuList" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 px-4 mt-4"></div>
+
     <div class="p-4">
-      <h2 class="font-bold text-lg">Keranjang</h2>
-      <ul id="cartList" class="my-2"></ul>
-      <p>Total: Rp <span id="cartTotal">0</span></p>
+      <h2 class="text-2xl font-butter text-center text-amber-700 mb-2">Keranjang</h2>
+      <ul id="cartList" class="my-2 text-sm"></ul>
+      <p class="text-right font-semibold">Total: Rp <span id="cartTotal">0</span></p>
       <button onclick="checkout()" class="bg-green-600 text-white w-full py-2 rounded mt-2">Checkout</button>
     </div>
+
     <div class="p-4">
-      <h2 class="font-bold text-lg">Log Transaksi Sementara</h2>
+      <h2 class="text-2xl font-butter text-center text-amber-700 mb-2">Log Transaksi</h2>
       <button onclick="clearTempTrans()" class="bg-red-600 text-white py-1 px-3 rounded mb-2">Hapus Semua</button>
       <div id="tempTransList"></div>
     </div>
   </div>
 
+  <!-- Halaman Menu -->
   <div id="menuPage" class="page hidden">
-    <h1 class="text-xl font-bold p-4">Kelola Menu</h1>
-    <form id="menuForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 px-4">
+    <h1 class="text-2xl font-butter text-center text-amber-700 mt-4">Kelola Menu</h1>
+    <form id="menuForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 px-4 mt-4">
       <input id="menuName" placeholder="Nama Menu" class="p-2 border rounded" required />
       <input id="menuPriceHot" type="number" placeholder="Harga Panas" class="p-2 border rounded" required />
       <input id="menuPriceCold" type="number" placeholder="Harga Es" class="p-2 border rounded" required />
       <input id="menuImage" type="file" accept="image/*" class="p-2 border rounded" />
       <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded col-span-full">Tambah Menu</button>
     </form>
-    <div id="menuTable" class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4"></div>
+    <div id="menuTable" class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 px-4"></div>
   </div>
 
+  <!-- Halaman Rekap -->
   <div id="rekapPage" class="page hidden">
-    <h1 class="text-xl font-bold p-4">Rekap</h1>
-    <canvas id="salesChart" class="w-full max-w-3xl mx-auto" height="100"></canvas>
-    <div id="rekapSummary" class="font-bold text-center mt-4"></div>
-    <div id="rekapList" class="p-4"></div>
+    <h1 class="text-2xl font-butter text-center text-amber-700 mt-4">Rekap</h1>
+    <canvas id="salesChart" height="120" class="mt-4"></canvas>
+    <div id="rekapSummary" class="text-center font-semibold my-4"></div>
+    <div id="rekapList" class="px-4"></div>
   </div>
 
-  <nav class="fixed-nav bg-white shadow flex justify-around border-t">
-    <button onclick="showPage('kasir')" class="p-2 text-center flex-1">☕<br><span class="text-sm">Kasir</span></button>
-    <button onclick="showPage('menu')" class="p-2 text-center flex-1">📋<br><span class="text-sm">Menu</span></button>
-    <button onclick="showPage('rekap')" class="p-2 text-center flex-1">📊<br><span class="text-sm">Rekap</span></button>
-  </nav>
+  <!-- Navigasi Bawah -->
+  <div class="fixed-nav">
+    <button onclick="showPage('kasir')" class="nav-btn" id="navKasir">Kasir</button>
+    <button onclick="showPage('menu')" class="nav-btn" id="navMenu">Menu</button>
+    <button onclick="showPage('rekap')" class="nav-btn" id="navRekap">Rekap</button>
+  </div>
 
+  <!-- Script App -->
   <script src="app.js"></script>
 </body>
 </html>
