@@ -11,7 +11,7 @@ function handleGoogleLogin(response) {
   const payload = JSON.parse(atob(id_token.split('.')[1]));
   localStorage.setItem('user', JSON.stringify({ username: payload.name, email: payload.email }));
   alert('Login Google sukses sebagai ' + payload.email);
-  showPage('kasir');
+  showPage('menu');
 }
 
 // --- Register User (HARUS global) ---
@@ -55,7 +55,7 @@ function loginUser() {
 // --- Logout User ---
 function logoutUser() {
   localStorage.removeItem('user');
-  showPage('menu');
+  showPage('login');
 }
 
 // --- Helper: Safe Parse ---
@@ -70,6 +70,12 @@ function loadSavedData() {
   sales = safeParse('sales', '[]');
   tempTrans = safeParse('tempTrans', '[]');
   currentUser = safeParse('user', 'null');
+  // Tambah user admin jika belum ada
+  let users = JSON.parse(localStorage.getItem('users') || '[]');
+  if (!users.find(u => u.username === 'admin')) {
+    users.push({ username: 'admin', password: 'admin' });
+    localStorage.setItem('users', JSON.stringify(users));
+  }
 }
 
 // --- Save to Local ---
@@ -96,52 +102,39 @@ async function fetchMenus() {
   }
 }
 
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => {
-    p.classList.add('hidden');
-    p.classList.remove('opacity-0');
-  });
-  const target = document.getElementById(id + 'Page');
-  if (target) {
-    target.classList.remove('hidden');
-  }
-}
-// --- Menu List (Kasir Pilihan) ---
+// --- MENU PAGE: Daftar Menu untuk dilihat (tanpa tombol tambah ke keranjang) ---
 function renderMenuList() {
   const menuList = document.getElementById('menuList');
   if (!menuList) return;
   menuList.innerHTML = '';
   menus.forEach((menu, i) => {
     const div = document.createElement('div');
-    div.className = 'border p-2 rounded shadow bg-white';
+    div.className = 'menu-item';
     div.innerHTML = `
-      <img src="${menu.gambar || 'https://via.placeholder.com/120'}" class="w-full h-32 object-cover rounded mb-2">
-      <h4 class="font-bold font-diary text-pink-700 text-lg">${menu.nama || 'Tanpa Nama'}</h4>
-      <div class="flex gap-2 mt-2 justify-center">
-        <button onclick="addToCart(${i}, 'hot')" class="bg-rose-300 text-white px-3 py-2 rounded-full shadow text-lg">
-          <span>&#9749;</span>
-        </button>
-        <button onclick="addToCart(${i}, 'cold')" class="bg-sky-300 text-white px-3 py-2 rounded-full shadow text-lg">
-          <span>&#127846;</span>
-        </button>
-      </div>`;
+      <img src="${menu.gambar || 'https://via.placeholder.com/120'}" alt="menu">
+      <div class="fw-bold mb-1" style="color:#f59e42">${menu.nama || 'Tanpa Nama'}</div>
+      <div class="text-sm mb-1">Panas: <b>Rp ${menu.hargapanas || '-'}</b></div>
+      <div class="text-sm mb-1">Es: <b>Rp ${menu.hargaes || '-'}</b></div>
+    `;
     menuList.appendChild(div);
   });
 }
 
-// --- Menu Table (admin lihat harga) ---
+// --- KASIR PAGE: Menu untuk transaksi (ada tombol tambah ke keranjang) ---
 function renderMenuTable() {
   const menuTable = document.getElementById('menuTable');
   if (!menuTable) return;
   menuTable.innerHTML = '';
   menus.forEach((menu, i) => {
     const div = document.createElement('div');
-    div.className = 'border p-2 bg-white rounded shadow';
+    div.className = 'menu-table-item';
     div.innerHTML = `
-      <img src="${menu.gambar || 'https://via.placeholder.com/120'}" class="w-full h-24 object-cover rounded mb-2">
-      <h4 class="font-bold font-diary text-pink-700">${menu.nama || 'Tanpa Nama'}</h4>
-      <p class="text-sm text-gray-600">Panas: Rp ${menu.hargapanas || '-'}</p>
-      <p class="text-sm text-gray-600">Es: Rp ${menu.hargaes || '-'}</p>
+      <img src="${menu.gambar || 'https://via.placeholder.com/120'}" alt="menu">
+      <div class="fw-bold mb-1" style="color:#f87171">${menu.nama || 'Tanpa Nama'}</div>
+      <div class="mb-1">
+        <button onclick="addToCart(${i}, 'hot')" class="btn" style="background:#f87171;">Panas<br>Rp ${menu.hargapanas || '-'}</button>
+        <button onclick="addToCart(${i}, 'cold')" class="btn" style="background:#2563eb;">Es<br>Rp ${menu.hargaes || '-'}</button>
+      </div>
     `;
     menuTable.appendChild(div);
   });
@@ -168,15 +161,15 @@ function renderCart() {
   cart.forEach((item, i) => {
     total += item.price * item.qty;
     list.innerHTML += `
-      <li class="flex justify-between items-center border-b py-2">
-        <span class="w-1/2">${item.name}</span>
-        <div class="flex items-center gap-2">
-          <button onclick="decreaseQty(${i})" class="px-3 py-1 rounded bg-gray-200">-</button>
-          <span>x${item.qty}</span>
-          <button onclick="increaseQty(${i})" class="px-3 py-1 rounded bg-gray-200">+</button>
-        </div>
-        <span>= Rp ${item.qty * item.price}</span>
-        <button onclick="removeFromCart(${i})" class="text-red-500 ml-2">🗑</button>
+      <li>
+        <span>${item.name}</span>
+        <span>
+          <button onclick="decreaseQty(${i})" class="btn" style="background:#eee;color:#444;padding:.1rem .7rem">-</button>
+          x${item.qty}
+          <button onclick="increaseQty(${i})" class="btn" style="background:#eee;color:#444;padding:.1rem .7rem">+</button>
+        </span>
+        <span>Rp ${item.price * item.qty}</span>
+        <button onclick="removeFromCart(${i})" class="btn" style="background:#f87171;padding:.1rem .7rem">🗑</button>
       </li>`;
   });
   const totalEl = document.getElementById('cartTotal');
@@ -201,15 +194,23 @@ function decreaseQty(i) {
   renderCart();
 }
 
+// --- REKAP PAGE: Chart & Top 10 ---
 function renderRekap() {
-  // Ambil periode dari input
-  const start = document.getElementById('rekapStart').value;
-  const end = document.getElementById('rekapEnd').value;
+  const start = document.getElementById('rekapStart')?.value;
+  const end = document.getElementById('rekapEnd')?.value;
   let data = sales;
   if (start && end) {
-    data = data.filter(trx =>
-      trx.date >= start && trx.date <= end
-    );
+    // Format tanggal Indonesia: DD/MM/YYYY, ubah ke YYYY-MM-DD
+    function toISO(d) {
+      if (!d) return '';
+      if (d.includes('-')) return d; // sudah ISO
+      const [day, month, year] = d.split('/');
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+    data = data.filter(trx => {
+      const tgl = toISO(trx.date);
+      return (!start || tgl >= start) && (!end || tgl <= end);
+    });
   }
   // Hitung penjualan per item
   const penjualan = {};
@@ -222,19 +223,21 @@ function renderRekap() {
     .slice(0,10);
   // Tampilkan list
   const topList = document.getElementById('top10List');
-  topList.innerHTML = top10.map(([name,jml]) =>
-    `<li>${name} <b>x${jml}</b> (${((jml/Object.values(penjualan).reduce((a,b)=>a+b,0))*100).toFixed(1)}%)</li>`
-  ).join('');
+  if(topList) topList.innerHTML = top10.map(([name,jml]) =>
+    `<li>${name} <b>x${jml}</b> (${((jml/Object.values(penjualan).reduce((a,b)=>a+b,0)||0)*100).toFixed(1)}%)</li>`
+  ).join('') || '<li>Tidak ada transaksi</li>';
   // Chart
-  const ctx = document.getElementById('rekapChart').getContext('2d');
-  if(window.rekapChartObj) window.rekapChartObj.destroy();
-  window.rekapChartObj = new Chart(ctx, {
-    type:'bar',
-    data: {
-      labels: top10.map(([name])=>name),
-      datasets: [{ label:'Penjualan', data: top10.map(([_,jml])=>jml), backgroundColor:'#fbbf24' }]
-    }
-  });
+  const ctx = document.getElementById('rekapChart')?.getContext('2d');
+  if(ctx){
+    if(window.rekapChartObj) window.rekapChartObj.destroy();
+    window.rekapChartObj = new Chart(ctx, {
+      type:'bar',
+      data: {
+        labels: top10.map(([name])=>name),
+        datasets: [{ label:'Penjualan', data: top10.map(([_,jml])=>jml), backgroundColor:'#fbbf24' }]
+      }
+    });
+  }
 }
 
 // --- Checkout Modal ---
@@ -251,12 +254,12 @@ function openCheckoutModal() {
   });
   const totalEl = document.getElementById('checkoutTotal');
   if (totalEl) totalEl.textContent = total;
-  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
 }
 
 function closeCheckoutModal() {
   const modal = document.getElementById('checkoutModal');
-  if (modal) modal.classList.add('hidden');
+  if (modal) modal.style.display = 'none';
 }
 
 // --- Konfirmasi Checkout ---
@@ -294,13 +297,13 @@ function renderTempTrans() {
   list.innerHTML = '';
   tempTrans.forEach((trx, i) => {
     const div = document.createElement('div');
-    div.className = 'border p-2 rounded bg-white';
+    div.className = 'border p-2 rounded bg-white mb-2';
     div.innerHTML = `
       <div><strong>${trx.time}</strong> - <em>${trx.user}</em></div>
       <ul class="text-sm">
         ${trx.items.map(item => `<li>${item.name} x${item.qty} = Rp ${item.qty * item.price}</li>`).join('')}
       </ul>
-      <button onclick="printSingleStruk(${i})" class="text-sm bg-blue-500 px-2 py-1 text-white rounded mt-2">Cetak Struk</button>
+      <button onclick="printSingleStruk(${i})" class="text-sm btn mt-2" style="background:#2563eb;">Cetak Struk</button>
     `;
     list.appendChild(div);
   });
@@ -310,6 +313,10 @@ function renderTempTrans() {
 function printSingleStruk(index) {
   const trx = tempTrans[index];
   if (!trx) return;
+  if (!window.jspdf) {
+    alert("jsPDF belum dimuat!");
+    return;
+  }
   const doc = new window.jspdf.jsPDF();
   doc.text("Struk Pembelian", 10, 10);
   doc.text(trx.time + ' - ' + trx.user, 10, 20);
@@ -328,6 +335,13 @@ window.onload = () => {
   loadSavedData();
   fetchMenus();
   const user = JSON.parse(localStorage.getItem('user') || 'null');
-  console.log('USER DI ONLOAD:', user);
-  showPage(user ? 'kasir' : 'login');
-}
+  showPage(user ? 'menu' : 'login');
+  // Render nav highlight & isi awal
+  if(user) {
+    renderMenuList();
+    renderMenuTable();
+    renderCart();
+    renderTempTrans();
+    renderRekap();
+  }
+};
