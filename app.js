@@ -1,10 +1,26 @@
-// app.js FINAL
+// app.js FINAL - CLEARED & IMPROVED
+
 const sheetURL = 'https://script.google.com/macros/s/AKfycbzuYVu7HgkCiiEpQajhGxqjSrMSDbUnFkCP05QGPRYp558pYXVU4TMUJ9pDSfCf_9BX/exec';
 let menus = [];
 let cart = [];
-let sales = JSON.parse(localStorage.getItem('sales') || '[]');
-let tempTrans = JSON.parse(localStorage.getItem('tempTrans') || '[]');
-let currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+let sales = [];
+let tempTrans = [];
+let currentUser = null;
+
+// Helper for safe JSON parse
+function safeParse(key, fallback) {
+  try {
+    return JSON.parse(localStorage.getItem(key) || fallback);
+  } catch { return fallback === 'null' ? null : JSON.parse(fallback); }
+}
+
+// Load data from localStorage
+function loadSavedData() {
+  sales = safeParse('sales', '[]');
+  tempTrans = safeParse('tempTrans', '[]');
+  currentUser = safeParse('user', 'null');
+}
+loadSavedData();
 
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => {
@@ -12,11 +28,12 @@ function showPage(id) {
     setTimeout(() => p.classList.add('hidden'), 300);
   });
   const target = document.getElementById(id + 'Page');
+  if (!target) return;
   target.classList.remove('hidden');
   setTimeout(() => target.classList.remove('opacity-0'), 10);
   if (id === 'menu') renderMenuTable();
   if (id === 'kasir') { renderMenuList(); renderTempTrans(); }
-  if (id === 'rekap') renderRekap();
+  if (id === 'rekap') renderRekap?.();
 }
 
 async function fetchMenus() {
@@ -29,6 +46,9 @@ async function fetchMenus() {
   } catch (err) {
     alert("Gagal mengambil menu dari spreadsheet");
     console.error(err);
+    menus = safeParse('menus', '[]');
+    renderMenuList();
+    renderMenuTable();
   }
 }
 
@@ -41,13 +61,14 @@ function saveToLocal() {
 
 function renderMenuList() {
   const menuList = document.getElementById('menuList');
+  if (!menuList) return;
   menuList.innerHTML = '';
   menus.forEach((menu, i) => {
     const div = document.createElement('div');
     div.className = 'border p-2 rounded shadow bg-white';
     div.innerHTML = `
-      <img src="${menu.gambar}" class="w-full h-32 object-cover rounded mb-2">
-      <h4 class="font-bold font-diary text-pink-700 text-lg">${menu.nama}</h4>
+      <img src="${menu.gambar || 'https://via.placeholder.com/120'}" class="w-full h-32 object-cover rounded mb-2">
+      <h4 class="font-bold font-diary text-pink-700 text-lg">${menu.nama || 'Tanpa Nama'}</h4>
       <div class="flex gap-2 mt-2 justify-center">
         <button onclick="addToCart(${i}, 'hot')" class="bg-rose-300 text-white px-3 py-2 rounded-full shadow text-lg">
           <i class="fas fa-mug-hot"></i>
@@ -59,28 +80,30 @@ function renderMenuList() {
     menuList.appendChild(div);
   });
 }
+
 function renderMenuTable() {
   const menuTable = document.getElementById('menuTable');
   if (!menuTable) return;
-
   menuTable.innerHTML = '';
   menus.forEach((menu, i) => {
     const div = document.createElement('div');
     div.className = 'border p-2 bg-white rounded shadow';
     div.innerHTML = `
-      <img src="${menu.gambar}" class="w-full h-24 object-cover rounded mb-2">
-      <h4 class="font-bold font-diary text-pink-700">${menu.nama}</h4>
-      <p class="text-sm text-gray-600">Panas: Rp ${menu.hargapanas}</p>
-      <p class="text-sm text-gray-600">Es: Rp ${menu.hargaes}</p>`;
+      <img src="${menu.gambar || 'https://via.placeholder.com/120'}" class="w-full h-24 object-cover rounded mb-2">
+      <h4 class="font-bold font-diary text-pink-700">${menu.nama || 'Tanpa Nama'}</h4>
+      <p class="text-sm text-gray-600">Panas: Rp ${menu.hargapanas || '-'}</p>
+      <p class="text-sm text-gray-600">Es: Rp ${menu.hargaes || '-'}</p>
+    `;
     menuTable.appendChild(div);
   });
 }
 
-
 function addToCart(i, type) {
   const m = menus[i];
+  if (!m) return;
   const name = `${m.nama} (${type === 'cold' ? 'Es' : 'Panas'})`;
   const price = type === 'cold' ? parseInt(m.hargaes) : parseInt(m.hargapanas);
+  if (isNaN(price)) return alert('Harga tidak valid.');
   const exist = cart.find(c => c.name === name);
   if (exist) exist.qty++;
   else cart.push({ name, price, qty: 1 });
@@ -89,6 +112,7 @@ function addToCart(i, type) {
 
 function renderCart() {
   const list = document.getElementById('cartList');
+  if (!list) return;
   list.innerHTML = '';
   let total = 0;
   cart.forEach((item, i) => {
@@ -105,7 +129,8 @@ function renderCart() {
         <button onclick="removeFromCart(${i})" class="text-red-500 ml-2">🗑</button>
       </li>`;
   });
-  document.getElementById('cartTotal').textContent = total;
+  const totalEl = document.getElementById('cartTotal');
+  if (totalEl) totalEl.textContent = total;
 }
 
 function removeFromCart(i) {
@@ -114,13 +139,15 @@ function removeFromCart(i) {
 }
 
 function increaseQty(i) {
-  cart[i].qty++;
+  if (cart[i]) cart[i].qty++;
   renderCart();
 }
 
 function decreaseQty(i) {
-  if (cart[i].qty > 1) cart[i].qty--;
-  else cart.splice(i, 1);
+  if (cart[i]) {
+    if (cart[i].qty > 1) cart[i].qty--;
+    else cart.splice(i, 1);
+  }
   renderCart();
 }
 
@@ -128,13 +155,15 @@ function openCheckoutModal() {
   if (!cart.length) return alert("Keranjang kosong!");
   const modal = document.getElementById('checkoutModal');
   const list = document.getElementById('checkoutList');
+  if (!modal || !list) return;
   list.innerHTML = '';
   let total = 0;
   cart.forEach(item => {
     total += item.qty * item.price;
     list.innerHTML += `<li class="flex justify-between border-b py-1"><span>${item.name} x${item.qty}</span><span>Rp ${item.qty * item.price}</span></li>`;
   });
-  document.getElementById('checkoutTotal').textContent = total;
+  const totalEl = document.getElementById('checkoutTotal');
+  if (totalEl) totalEl.textContent = total;
   modal.classList.remove('hidden');
 }
 
@@ -165,11 +194,13 @@ async function confirmCheckout() {
 }
 
 function closeCheckoutModal() {
-  document.getElementById('checkoutModal').classList.add('hidden');
+  const modal = document.getElementById('checkoutModal');
+  if (modal) modal.classList.add('hidden');
 }
 
 function renderTempTrans() {
   const list = document.getElementById('tempTransList');
+  if (!list) return;
   list.innerHTML = '';
   tempTrans.forEach((trx, i) => {
     const div = document.createElement('div');
@@ -187,6 +218,7 @@ function renderTempTrans() {
 
 function printSingleStruk(index) {
   const trx = tempTrans[index];
+  if (!trx) return;
   const doc = new window.jspdf.jsPDF();
   doc.text("Struk Pembelian", 10, 10);
   doc.text(trx.time + ' - ' + trx.user, 10, 20);
@@ -202,7 +234,7 @@ function printSingleStruk(index) {
 
 function loginUser(email) {
   currentUser = { email };
-  localStorage.setItem('user', JSON.stringify(currentUser));
+  saveToLocal();
   alert('Login sukses sebagai ' + email);
   showPage('kasir');
 }
@@ -214,6 +246,7 @@ function logoutUser() {
 }
 
 window.onload = () => {
+  loadSavedData();
   fetchMenus();
   showPage(currentUser ? 'kasir' : 'login');
 };
