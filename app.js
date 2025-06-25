@@ -1,6 +1,6 @@
 // app.js FINAL REVISI
 
-const sheetURL = 'https://script.google.com/macros/s/AKfycbx31A-ImwsYRteQCtSCvBEscYPUL06JXZwzUdHbJLAqQKaop0z6V7c76mGu0QcS60Gg/exec';
+const sheetURL = 'https://script.google.com/macros/s/AKfycbwHKSO_ePKriJ5BBsqPdaHGommUVjTh_6KpSQ6dLC0/dev';
 let menus = [];
 let cart = [];
 let sales = JSON.parse(localStorage.getItem('sales') || '[]');
