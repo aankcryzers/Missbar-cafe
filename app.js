@@ -80,17 +80,34 @@ function renderCart() {
   const list = document.getElementById('cartList');
   list.innerHTML = '';
   let total = 0;
+
   cart.forEach((item, i) => {
     total += item.price * item.qty;
+
     list.innerHTML += `
-      <li>
-        ${item.name} <button onclick="decreaseQty(${i})">-</button>
-        x${item.qty} <button onclick="increaseQty(${i})">+</button>
-        = Rp ${item.qty * item.price} <button onclick="removeFromCart(${i})">Hapus</button>
+      <li class="flex justify-between items-center border-b py-2">
+        <div class="flex-1">
+          <span class="block font-semibold">${item.name}</span>
+          <div class="flex items-center gap-2 mt-1">
+            <button onclick="decreaseQty(${i})" class="bg-red-500 text-white px-3 py-1 rounded-full text-lg">
+              <i class="fas fa-minus"></i>
+            </button>
+            <span class="text-lg font-bold">${item.qty}</span>
+            <button onclick="increaseQty(${i})" class="bg-green-500 text-white px-3 py-1 rounded-full text-lg">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="font-bold text-amber-700">Rp ${item.qty * item.price}</p>
+          <button onclick="removeFromCart(${i})" class="text-sm text-red-700 mt-1 hover:underline">Hapus</button>
+        </div>
       </li>`;
   });
+
   document.getElementById('cartTotal').textContent = total;
 }
+
 
 function removeFromCart(i) {
   cart.splice(i, 1);
