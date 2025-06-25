@@ -176,7 +176,28 @@ html, body {
   margin-bottom: .3rem;
   background: #eee;
 }
-
+.trans-accordion { 
+  border: 1px solid #eee; 
+  border-radius: 8px; 
+  margin-bottom: 12px; 
+  box-shadow: 0 2px 8px #0001;
+  transition: box-shadow 0.2s;
+  background: #fff;
+}
+.trans-accordion:hover {
+  box-shadow: 0 4px 16px #e6002322;
+}
+.trans-header {
+  cursor: pointer;
+  padding: 10px 12px;
+  font-weight: bold;
+  background: #f7f7f7;
+  border-radius: 8px 8px 0 0;
+}
+.trans-detail {
+  padding: 12px;
+  border-top: 1px solid #eee;
+}
 .cart-list, .rekap-list, .top10-list {
   list-style: none;
   padding: 0;
