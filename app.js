@@ -118,20 +118,12 @@ function saveMenuEdit(){
   renderMenuTable();
 }
 function deleteMenu(i){
-  if(confirm("Hapus menu ini?")) menus.splice(i,1);
-  saveToLocal();
-  renderMenuList();
-  renderMenuTable();
-}
-
-function addToCart(i, type) {
-  // ... kode lama ...
-  renderCart();
-  // Tambahan: scroll ke keranjang
-  setTimeout(() => {
-    const cart = document.getElementById('cartList');
-    if (cart) cart.scrollIntoView({behavior: 'smooth', block: 'center'});
-  }, 100);
+  if(confirm("Hapus menu ini?")) {
+    menus.splice(i,1);
+    saveToLocal();
+    renderMenuList();
+    renderMenuTable();
+  }
 }
 
 // ========== MENU PAGE ==========
@@ -167,9 +159,9 @@ function renderMenuTable() {
     div.innerHTML = `
       <img src="${menu.gambar || 'https://via.placeholder.com/120'}" alt="menu">
       <div class="fw-bold mb-1" style="color:var(--accent)">${menu.nama || 'Tanpa Nama'}</div>
-      <div class="mb-1">
-        <button onclick="addToCart(${i}, 'hot')" class="btn" style="background:var(--primary);">Panas<br>Rp ${menu.hargapanas || '-'}</button>
-        <button onclick="addToCart(${i}, 'cold')" class="btn" style="background:var(--accent);">Es<br>Rp ${menu.hargaes || '-'}</button>
+      <div class="mb-1 flex gap-2">
+        <button onclick="addToCart(${i}, 'hot')" class="btn" style="background:var(--primary);min-width:65px;">Panas<br>Rp ${menu.hargapanas || '-'}</button>
+        <button onclick="addToCart(${i}, 'cold')" class="btn" style="background:var(--accent);min-width:65px;">Es<br>Rp ${menu.hargaes || '-'}</button>
       </div>
     `;
     menuTable.appendChild(div);
@@ -187,7 +179,13 @@ function addToCart(i, type) {
   if (exist) exist.qty++;
   else cart.push({ name, price, qty: 1 });
   renderCart();
+  // Auto-scroll ke keranjang (user experience enhancement)
+  setTimeout(() => {
+    const cartList = document.getElementById('cartList');
+    if (cartList) cartList.scrollIntoView({behavior: 'smooth', block: 'center'});
+  }, 100);
 }
+
 function renderCart() {
   const list = document.getElementById('cartList');
   if (!list) return;
@@ -199,17 +197,18 @@ function renderCart() {
       <li>
         <span>${item.name}</span>
         <span>
-          <button onclick="decreaseQty(${i})" class="btn" style="background:#eee;color:#444;padding:.1rem .7rem">-</button>
-          x${item.qty}
-          <button onclick="increaseQty(${i})" class="btn" style="background:#eee;color:#444;padding:.1rem .7rem">+</button>
+          <button onclick="decreaseQty(${i})" class="btn" style="background:#eee;color:#444;padding:.25em .7em;font-size:1.4em;margin:0 .2em;">−</button>
+          <span style="font-size:1.1em;min-width:2em;display:inline-block;text-align:center;">${item.qty}</span>
+          <button onclick="increaseQty(${i})" class="btn" style="background:#eee;color:#444;padding:.25em .7em;font-size:1.4em;margin:0 .2em;">+</button>
         </span>
-        <span>Rp ${item.price * item.qty}</span>
-        <button onclick="removeFromCart(${i})" class="btn" style="background:#e60023;padding:.1rem .7rem">🗑</button>
+        <span style="min-width:75px;text-align:right;">Rp ${item.price * item.qty}</span>
+        <button onclick="removeFromCart(${i})" class="btn" style="background:#e60023;padding:.38em .7em;font-size:1.2em;">🗑</button>
       </li>`;
   });
   const totalEl = document.getElementById('cartTotal');
   if (totalEl) totalEl.textContent = total;
 }
+
 function removeFromCart(i) { cart.splice(i, 1); renderCart(); }
 function increaseQty(i) { if (cart[i]) cart[i].qty++; renderCart(); }
 function decreaseQty(i) { if (cart[i]) { if (cart[i].qty > 1) cart[i].qty--; else cart.splice(i, 1); } renderCart(); }
@@ -345,14 +344,10 @@ function renderTempTrans() {
     div.className = 'border p-2 rounded bg-white mb-2';
     div.innerHTML = `
       <div><strong>${trx.time}</strong> - <em>${trx.user}</em></div>
-<div id="tempTransList"></div>
       <ul class="text-sm">
         ${trx.items.map(item => `<li>${item.name} x${item.qty} = Rp ${item.qty * item.price}</li>`).join('')}
       </ul>
       <button onclick="printSingleStruk(${i})" class="text-sm btn mt-2" style="background:var(--accent);">Cetak Struk</button>
-/* Accordion effect (optional) */
-#tempTransList > div { transition: box-shadow 0.2s; }
-#tempTransList > div:hover { box-shadow: 0 2px 12px #0001; }
     `;
     list.appendChild(div);
   });
