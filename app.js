@@ -5,6 +5,7 @@ let sales = [];
 let tempTrans = [];
 let currentUser = null;
 
+// --- Google Sign-In Callback (HARUS global) ---
 function handleGoogleLogin(response) {
   const id_token = response.credential;
   const payload = JSON.parse(atob(id_token.split('.')[1]));
@@ -13,6 +14,7 @@ function handleGoogleLogin(response) {
   showPage('kasir');
 }
 
+// --- Register User (HARUS global) ---
 function registerUser() {
   const username = document.getElementById('regUsername').value.trim();
   const password = document.getElementById('regPassword').value;
@@ -31,6 +33,7 @@ function registerUser() {
   showPage('login');
 }
 
+// --- Login User (HARUS global) ---
 function loginUser() {
   const username = document.getElementById('loginUsername').value.trim();
   const password = document.getElementById('loginPassword').value;
@@ -49,37 +52,35 @@ function loginUser() {
   showPage('kasir');
 }
 
+// --- Logout User ---
 function logoutUser() {
   localStorage.removeItem('user');
   showPage('login');
 }
 
+// --- Helper: Safe Parse ---
 function safeParse(key, fallback) {
   try {
     return JSON.parse(localStorage.getItem(key) || fallback);
   } catch { return fallback === 'null' ? null : JSON.parse(fallback); }
 }
 
+// --- Load Saved Data ---
 function loadSavedData() {
   sales = safeParse('sales', '[]');
   tempTrans = safeParse('tempTrans', '[]');
   currentUser = safeParse('user', 'null');
 }
 
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => {
-    p.classList.add('opacity-0');
-    setTimeout(() => p.classList.add('hidden'), 300);
-  });
-  const target = document.getElementById(id + 'Page');
-  console.log('Menampilkan:', id + 'Page', 'target:', target);
-  if (!target) return;
-  target.classList.remove('hidden');
-  setTimeout(() => target.classList.remove('opacity-0'), 10);
-  if (id === 'menu') renderMenuTable();
-  if (id === 'kasir') { renderMenuList(); renderTempTrans(); }
+// --- Save to Local ---
+function saveToLocal() {
+  localStorage.setItem('menus', JSON.stringify(menus));
+  localStorage.setItem('sales', JSON.stringify(sales));
+  localStorage.setItem('tempTrans', JSON.stringify(tempTrans));
+  localStorage.setItem('user', JSON.stringify(currentUser));
 }
 
+// --- Fetch Menus (async) ---
 async function fetchMenus() {
   try {
     const res = await fetch(sheetURL);
@@ -95,13 +96,22 @@ async function fetchMenus() {
   }
 }
 
-function saveToLocal() {
-  localStorage.setItem('menus', JSON.stringify(menus));
-  localStorage.setItem('sales', JSON.stringify(sales));
-  localStorage.setItem('tempTrans', JSON.stringify(tempTrans));
-  localStorage.setItem('user', JSON.stringify(currentUser));
+// --- Page Show/Hide ---
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.add('opacity-0');
+    setTimeout(() => p.classList.add('hidden'), 300);
+  });
+  const target = document.getElementById(id + 'Page');
+  console.log('showPage', id, 'target:', target);
+  if (!target) return;
+  target.classList.remove('hidden');
+  setTimeout(() => target.classList.remove('opacity-0'), 10);
+  if (id === 'menu') renderMenuTable();
+  if (id === 'kasir') { renderMenuList(); renderTempTrans(); }
 }
 
+// --- Menu List (Kasir Pilihan) ---
 function renderMenuList() {
   const menuList = document.getElementById('menuList');
   if (!menuList) return;
@@ -124,6 +134,7 @@ function renderMenuList() {
   });
 }
 
+// --- Menu Table (admin lihat harga) ---
 function renderMenuTable() {
   const menuTable = document.getElementById('menuTable');
   if (!menuTable) return;
@@ -141,6 +152,7 @@ function renderMenuTable() {
   });
 }
 
+// --- Cart Logic ---
 function addToCart(i, type) {
   const m = menus[i];
   if (!m) return;
@@ -194,6 +206,7 @@ function decreaseQty(i) {
   renderCart();
 }
 
+// --- Checkout Modal ---
 function openCheckoutModal() {
   if (!cart.length) return alert("Keranjang kosong!");
   const modal = document.getElementById('checkoutModal');
@@ -210,6 +223,12 @@ function openCheckoutModal() {
   modal.classList.remove('hidden');
 }
 
+function closeCheckoutModal() {
+  const modal = document.getElementById('checkoutModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+// --- Konfirmasi Checkout ---
 async function confirmCheckout() {
   const now = new Date();
   const time = now.toLocaleTimeString('id-ID');
@@ -237,11 +256,7 @@ async function confirmCheckout() {
   closeCheckoutModal();
 }
 
-function closeCheckoutModal() {
-  const modal = document.getElementById('checkoutModal');
-  if (modal) modal.classList.add('hidden');
-}
-
+// --- Transaksi Sementara (Struk) ---
 function renderTempTrans() {
   const list = document.getElementById('tempTransList');
   if (!list) return;
@@ -260,6 +275,7 @@ function renderTempTrans() {
   });
 }
 
+// --- Cetak Struk ---
 function printSingleStruk(index) {
   const trx = tempTrans[index];
   if (!trx) return;
@@ -276,6 +292,7 @@ function printSingleStruk(index) {
   doc.save('struk.pdf');
 }
 
+// --- ONLOAD: Init App ---
 window.onload = () => {
   loadSavedData();
   fetchMenus();
@@ -283,17 +300,3 @@ window.onload = () => {
   console.log('USER DI ONLOAD:', user);
   showPage(user ? 'kasir' : 'login');
 };
-
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => {
-    p.classList.add('opacity-0');
-    setTimeout(() => p.classList.add('hidden'), 300);
-  });
-  const target = document.getElementById(id + 'Page');
-  console.log('showPage', id, 'target:', target);
-  if (!target) return;
-  target.classList.remove('hidden');
-  setTimeout(() => target.classList.remove('opacity-0'), 10);
-  if (id === 'menu') renderMenuTable();
-  if (id === 'kasir') { renderMenuList(); renderTempTrans(); }
-}
