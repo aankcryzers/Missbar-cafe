@@ -304,6 +304,70 @@ function closeCheckoutModal() {
   if (modal) modal.style.display = 'none';
 }
 
+// Update badge angka keranjang
+function updateCartBadge() {
+  const badge = document.getElementById('cartBadge');
+  const count = cart.reduce((n, i) => n + i.qty, 0);
+  badge.textContent = count;
+  badge.style.display = count > 0 ? '' : 'none';
+}
+
+// Tampilkan popup keranjang
+function toggleCartPopup() {
+  renderCartPopup();
+  document.getElementById('cartPopup').classList.add('active');
+}
+
+// Tutup popup keranjang
+function closeCartPopup(e) {
+  if (!e || e.target.id === 'cartPopup' || e.type === "keydown") {
+    document.getElementById('cartPopup').classList.remove('active');
+  }
+}
+
+// Render isi popup keranjang
+function renderCartPopup() {
+  const list = document.getElementById('cartPopupList');
+  if (!list) return;
+  list.innerHTML = '';
+  let total = 0;
+  cart.forEach((item, i) => {
+    total += item.price * item.qty;
+    list.innerHTML += `
+      <li>
+        <span>${item.name}</span>
+        <span>
+          <button onclick="decreaseQty(${i}); renderCartPopup();" class="btn" style="background:#eee;color:#444;padding:.1rem .7rem">-</button>
+          x${item.qty}
+          <button onclick="increaseQty(${i}); renderCartPopup();" class="btn" style="background:#eee;color:#444;padding:.1rem .7rem">+</button>
+        </span>
+        <span>Rp ${item.price * item.qty}</span>
+        <button onclick="removeFromCart(${i}); renderCartPopup();" class="btn" style="background:#e60023;padding:.1rem .7rem">🗑</button>
+      </li>`;
+  });
+  document.getElementById('cartPopupTotal').textContent = total;
+}
+
+// Checkout dari popup
+function checkoutCart() {
+  if (!cart.length) return alert("Keranjang kosong!");
+  // Logika checkout seperti biasa (simpan transaksi, kosongkan cart, dsb)
+  cart = [];
+  renderCart();
+  renderCartPopup();
+  document.getElementById('cartPopup').classList.remove('active');
+}
+
+// Update badge setiap cart berubah
+function renderCart() {
+  // ... isi renderCart lama kamu ...
+  updateCartBadge();
+}
+
+// Tutup popup dengan ESC keyboard
+document.addEventListener('keydown', function(e){
+  if(e.key === "Escape") closeCartPopup({target:{id:'cartPopup'}, type:"keydown"});
+});
 // ========== Konfirmasi Checkout ==========
 async function confirmCheckout() {
   const now = new Date();
