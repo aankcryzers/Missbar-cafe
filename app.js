@@ -98,25 +98,14 @@ async function fetchMenus() {
 
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => {
-    p.classList.add('opacity-0');
-    // Jangan langsung setTimeout di sini!
-    // Nanti timeout-nya bentrok dan saling menimpa
-    setTimeout(() => {
-      if (p.id !== id + 'Page') {
-        p.classList.add('hidden');
-      }
-    }, 300);
+    p.classList.add('hidden');
+    p.classList.remove('opacity-0');
   });
   const target = document.getElementById(id + 'Page');
-  console.log('showPage', id, 'target:', target);
-  if (!target) return;
-  // Unhide target SETELAH semua page lain di-hide (setelah 300ms)
-  setTimeout(() => {
+  if (target) {
     target.classList.remove('hidden');
-    setTimeout(() => target.classList.remove('opacity-0'), 10);
-  }, 300);
+  }
 }
-
 // --- Menu List (Kasir Pilihan) ---
 function renderMenuList() {
   const menuList = document.getElementById('menuList');
