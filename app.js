@@ -299,4 +299,4 @@ window.onload = () => {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   console.log('USER DI ONLOAD:', user);
   showPage(user ? 'kasir' : 'login');
-};
+}
