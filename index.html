@@ -1,78 +1,59 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MISS BAR</title>
+  <title>MISSBAR</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#ffffff">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <style>
-    body { background-color: #f1f5f9; margin: 0; }
-    .hidden { display: none; }
-    .sidebar { background: #0f172a; color: white; min-width: 200px; }
-    @media (max-width: 768px) {
-      .sidebar { position: absolute; z-index: 50; height: 100vh; transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
-      .sidebar.open { transform: translateX(0); }
-    }
-  </style>
+  <script src="app.js" defer></script>
 </head>
-<body class="text-gray-900 font-sans">
-  <div class="flex min-h-screen relative">
-    <div id="sidebar" class="sidebar p-4">
-      <h1 class="text-xl font-bold mb-6">☕ Kasir Kopi</h1>
-      <nav class="space-y-3">
-        <button onclick="showPage('kasir')" class="block w-full text-left px-4 py-2 bg-blue-700 rounded">Kasir</button>
-        <button onclick="showPage('menu')" class="block w-full text-left px-4 py-2 bg-yellow-700 rounded">Menu</button>
-        <button onclick="showPage('rekap')" class="block w-full text-left px-4 py-2 bg-green-700 rounded">Rekap</button>
-      </nav>
+<body class="bg-slate-800 text-gray-900 font-sans">
+  <div class="p-4" id="appRoot">
+    <div id="kasirPage">
+      <h2 class="text-xl font-bold mb-2">Kasir</h2>
+      <div id="menuList" class="grid grid-cols-2 gap-4"></div>
+      <div class="bg-white p-4 mt-4 rounded shadow">
+        <h3 class="font-bold mb-2">Keranjang</h3>
+        <ul id="cartList"></ul>
+        <p class="mt-2 font-bold">Total: Rp <span id="cartTotal">0</span></p>
+        <button onclick="checkout()" class="bg-green-600 w-full text-white py-2 rounded mt-2">Checkout</button>
+      </div>
+      <div class="mt-4">
+        <h4 class="font-bold">Log Transaksi Sementara</h4>
+        <button onclick="clearTempTrans()" class="bg-red-500 text-white px-4 py-1 rounded mb-2">Hapus Semua Log</button>
+        <div id="tempTransList" class="space-y-2"></div>
+      </div>
     </div>
-    <button onclick="toggleSidebar()" class="md:hidden fixed top-2 left-2 bg-gray-900 text-white px-3 py-2 rounded z-50">☰</button>
-
-    <div class="flex-1 p-4 ml-0 md:ml-[200px]">
-      <div id="kasirPage" class="page">
-        <h2 class="text-2xl font-bold mb-4">Kasir</h2>
-        <div id="menuList" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"></div>
-        <div class="bg-white p-4 rounded shadow mt-4">
-          <h3 class="text-xl font-bold mb-2">Keranjang</h3>
-          <ul id="cartList" class="mb-2 space-y-2"></ul>
-          <p class="font-bold">Total: Rp <span id="cartTotal">0</span></p>
-          <button onclick="checkout()" class="mt-2 bg-green-600 text-white px-4 py-2 rounded w-full">Checkout</button>
-          <button onclick="printReceipt()" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded w-full">Cetak Struk</button>
-        </div>
-        <div class="mt-4">
-          <h4 class="text-lg font-bold">Log Transaksi Sementara</h4>
-          <button onclick="clearTempTrans()" class="bg-red-600 text-white px-3 py-1 rounded mb-2">Hapus Semua Log</button>
-          <div id="tempTransList" class="space-y-4"></div>
-        </div>
-      </div>
-
-      <div id="menuPage" class="page hidden">
-        <h2 class="text-2xl font-bold mb-4">Kelola Menu</h2>
-        <form id="menuForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <input id="menuName" placeholder="Nama Menu" class="p-2 border rounded" required />
-          <input id="menuPriceHot" type="number" placeholder="Harga Panas" class="p-2 border rounded" required />
-          <input id="menuPriceCold" type="number" placeholder="Harga Es" class="p-2 border rounded" required />
-          <input id="menuImage" type="file" accept="image/*" class="p-2 border rounded" />
-          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded col-span-full" id="submitBtn">Tambah Menu</button>
-          <input type="hidden" id="editIndex" />
-        </form>
-        <div id="menuTable" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
-      </div>
-
-      <div id="rekapPage" class="page hidden">
-        <h2 class="text-2xl font-bold mb-4">Rekap Transaksi</h2>
-        <canvas id="salesChart" height="100"></canvas>
-        <div id="rekapSummary" class="mt-4 font-bold"></div>
-        <div id="rekapList" class="mt-6"></div>
-      </div>
+    <div id="menuPage" class="hidden">
+      <h2 class="text-xl font-bold mb-2">Kelola Menu</h2>
+      <form id="menuForm" class="grid grid-cols-2 gap-2">
+        <input id="menuName" class="p-2 border rounded" placeholder="Nama Menu">
+        <input id="menuPriceHot" class="p-2 border rounded" type="number" placeholder="Harga Panas">
+        <input id="menuPriceCold" class="p-2 border rounded" type="number" placeholder="Harga Es">
+        <input id="menuImage" class="p-2 border rounded" type="file">
+        <input type="hidden" id="editIndex">
+        <button type="submit" class="col-span-2 bg-blue-600 text-white py-2 rounded">Simpan</button>
+      </form>
+      <div id="menuTable" class="grid grid-cols-2 gap-4 mt-4"></div>
+    </div>
+    <div id="rekapPage" class="hidden">
+      <h2 class="text-xl font-bold mb-2">Rekap Transaksi</h2>
+      <input type="date" id="filterDate" class="mb-4 p-2 border rounded" onchange="renderRekap()">
+      <canvas id="salesChart" height="100"></canvas>
+      <div id="rekapSummary" class="font-bold mt-4"></div>
+      <div id="rekapList" class="mt-2"></div>
     </div>
   </div>
 
-  <!-- Pindahkan semua script JS utama ke app.js -->
-  <script src="app.js"></script>
+  <nav class="fixed bottom-0 left-0 w-full bg-white shadow flex justify-around md:hidden">
+    <button onclick="showPage('kasir')" class="py-2 flex-1">Kasir</button>
+    <button onclick="showPage('menu')" class="py-2 flex-1">Menu</button>
+    <button onclick="showPage('rekap')" class="py-2 flex-1">Rekap</button>
+  </nav>
 </body>
 </html>
