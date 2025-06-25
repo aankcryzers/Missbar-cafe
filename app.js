@@ -304,28 +304,24 @@ function closeCheckoutModal() {
   if (modal) modal.style.display = 'none';
 }
 
-// Update badge angka keranjang
 function updateCartBadge() {
   const badge = document.getElementById('cartBadge');
+  if(!badge) return;
   const count = cart.reduce((n, i) => n + i.qty, 0);
   badge.textContent = count;
   badge.style.display = count > 0 ? '' : 'none';
 }
 
-// Tampilkan popup keranjang
+// POPUP LOGIC
 function toggleCartPopup() {
   renderCartPopup();
   document.getElementById('cartPopup').classList.add('active');
 }
-
-// Tutup popup keranjang
 function closeCartPopup(e) {
   if (!e || e.target.id === 'cartPopup' || e.type === "keydown") {
     document.getElementById('cartPopup').classList.remove('active');
   }
 }
-
-// Render isi popup keranjang
 function renderCartPopup() {
   const list = document.getElementById('cartPopupList');
   if (!list) return;
@@ -348,26 +344,34 @@ function renderCartPopup() {
   document.getElementById('cartPopupTotal').textContent = total;
 }
 
-// Checkout dari popup
+// Tutup popup dengan ESC keyboard
+document.addEventListener('keydown', function(e){
+  if(e.key === "Escape") closeCartPopup({target:{id:'cartPopup'}, type:"keydown"});
+});
+
+// PASTIKAN renderCart() selalu update badge
+function renderCart() {
+  // ... isi renderCart lama kamu ...
+  updateCartBadge();
+}
+
+// Saat checkout: popup hilang otomatis dan badge jadi 0
 function checkoutCart() {
   if (!cart.length) return alert("Keranjang kosong!");
-  // Logika checkout seperti biasa (simpan transaksi, kosongkan cart, dsb)
+  // logic simpan transaksi kamu di sini
   cart = [];
   renderCart();
   renderCartPopup();
   document.getElementById('cartPopup').classList.remove('active');
 }
 
-// Update badge setiap cart berubah
-function renderCart() {
-  // ... isi renderCart lama kamu ...
-  updateCartBadge();
+// Otomatis tutup popup saat tambah menu
+function saveMenuEdit(){
+  // ... logic simpan menu ...
+  closeCartPopup(); // <--- tutup popup jika ada
 }
 
-// Tutup popup dengan ESC keyboard
-document.addEventListener('keydown', function(e){
-  if(e.key === "Escape") closeCartPopup({target:{id:'cartPopup'}, type:"keydown"});
-});
+
 // ========== Konfirmasi Checkout ==========
 async function confirmCheckout() {
   const now = new Date();
