@@ -1,4 +1,4 @@
-// app.js FINAL LENGKAP
+// app.js FINAL
 const sheetURL = 'https://script.google.com/macros/s/AKfycbzuYVu7HgkCiiEpQajhGxqjSrMSDbUnFkCP05QGPRYp558pYXVU4TMUJ9pDSfCf_9BX/exec';
 let menus = [];
 let cart = [];
@@ -49,10 +49,10 @@ function renderMenuList() {
       <img src="${menu.gambar}" class="w-full h-32 object-cover rounded mb-2">
       <h4 class="font-bold font-diary text-pink-700 text-lg">${menu.nama}</h4>
       <div class="flex gap-2 mt-2 justify-center">
-        <button onclick="addToCart(${i}, 'hot')" class="bg-rose-300 hover:bg-rose-400 text-white px-3 py-2 rounded-full shadow text-lg">
+        <button onclick="addToCart(${i}, 'hot')" class="bg-rose-300 text-white px-3 py-2 rounded-full shadow text-lg">
           <i class="fas fa-mug-hot"></i>
         </button>
-        <button onclick="addToCart(${i}, 'cold')" class="bg-sky-300 hover:bg-sky-400 text-white px-3 py-2 rounded-full shadow text-lg">
+        <button onclick="addToCart(${i}, 'cold')" class="bg-sky-300 text-white px-3 py-2 rounded-full shadow text-lg">
           <i class="fas fa-ice-cream"></i>
         </button>
       </div>`;
@@ -80,9 +80,9 @@ function renderCart() {
       <li class="flex justify-between items-center border-b py-2">
         <span class="w-1/2">${item.name}</span>
         <div class="flex items-center gap-2">
-          <button onclick="decreaseQty(${i})" class="px-3 py-1 rounded-full bg-gray-200 hover:bg-gray-300">-</button>
+          <button onclick="decreaseQty(${i})" class="px-3 py-1 rounded bg-gray-200">-</button>
           <span>x${item.qty}</span>
-          <button onclick="increaseQty(${i})" class="px-3 py-1 rounded-full bg-gray-200 hover:bg-gray-300">+</button>
+          <button onclick="increaseQty(${i})" class="px-3 py-1 rounded bg-gray-200">+</button>
         </div>
         <span>= Rp ${item.qty * item.price}</span>
         <button onclick="removeFromCart(${i})" class="text-red-500 ml-2">🗑</button>
