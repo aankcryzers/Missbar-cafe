@@ -341,13 +341,17 @@ function renderTempTrans() {
   list.innerHTML = '';
   tempTrans.forEach((trx, i) => {
     const div = document.createElement('div');
-    div.className = 'border p-2 rounded bg-white mb-2';
+    div.className = 'trans-accordion';
     div.innerHTML = `
-      <div><strong>${trx.time}</strong> - <em>${trx.user}</em></div>
-      <ul class="text-sm">
-        ${trx.items.map(item => `<li>${item.name} x${item.qty} = Rp ${item.qty * item.price}</li>`).join('')}
-      </ul>
-      <button onclick="printSingleStruk(${i})" class="text-sm btn mt-2" style="background:var(--accent);">Cetak Struk</button>
+      <div class="trans-header" onclick="toggleTransDetail(this)">
+        <strong>${trx.time}</strong> - <em>${trx.user}</em>
+      </div>
+      <div class="trans-detail" style="display:none">
+        <ul class="text-sm">
+          ${trx.items.map(item => `<li>${item.name} x${item.qty} = Rp ${item.qty * item.price}</li>`).join('')}
+        </ul>
+        <button onclick="printSingleStruk(${i})" class="text-sm btn mt-2" style="background:var(--accent);">Cetak Struk</button>
+      </div>
     `;
     list.appendChild(div);
   });
