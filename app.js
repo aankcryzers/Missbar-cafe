@@ -19,16 +19,23 @@ function showPage(page) {
   if (page === 'menu') renderMenuTable();
 }
 
-function fetchMenus() {
-  fetch(sheetURL + "?action=getMenus")
-    .then(res => res.json())
-    .then(data => {
-      menus = data;
-      renderMenuList();
-      renderMenuTable();
-    })
-    .catch(() => alert("Gagal ambil menu dari spreadsheet."));
+async function fetchMenus() {
+  try {
+    const res = await fetch(sheetURL + "?action=getMenus");
+    console.log("HTTP status:", res.status);
+    const text = await res.text();
+    console.log("Response text raw:", text);
+    const data = JSON.parse(text);
+    console.log("Parsed menu data:", data);
+    menus = data;
+    renderMenuList();
+    renderMenuTable();
+  } catch (err) {
+    console.error("Gagal mengambil menu dari spreadsheet:", err);
+    alert("Cek console untuk detail fetch menu.");
+  }
 }
+
 
 function renderMenuList() {
   const menuList = document.getElementById("menuList");
