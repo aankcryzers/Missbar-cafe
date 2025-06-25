@@ -5,6 +5,14 @@ let sales = [];
 let tempTrans = [];
 let currentUser = null;
 
+function handleGoogleLogin(response) {
+  const id_token = response.credential;
+  const payload = JSON.parse(atob(id_token.split('.')[1]));
+  localStorage.setItem('user', JSON.stringify({ username: payload.name, email: payload.email }));
+  alert('Login Google sukses sebagai ' + payload.email);
+  showPage('kasir');
+}
+
 function registerUser() {
   const username = document.getElementById('regUsername').value.trim();
   const password = document.getElementById('regPassword').value;
