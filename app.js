@@ -49,13 +49,13 @@ function loginUser() {
   }
   localStorage.setItem('user', JSON.stringify({ username }));
   alert('Login sukses!');
-  showPage('kasir');
+  showPage('menu');
 }
 
 // --- Logout User ---
 function logoutUser() {
   localStorage.removeItem('user');
-  showPage('login');
+  showPage('menu');
 }
 
 // --- Helper: Safe Parse ---
