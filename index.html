@@ -8,14 +8,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
-      --primary: #fbbf24;
-      --secondary: #f87171;
-      --accent: #2563eb;
+      --primary: #e60023;
+      --secondary: #e9e9e9;
+      --accent: #b83260;
       --nav-bg: #fff;
-      --nav-border: #e5e7eb;
-      --nav-active: #fbbf24;
+      --nav-border: #d3d3d3;
+      --nav-active: #e60023;
     }
     html, body {
       height: 100%;
@@ -49,7 +50,7 @@
       margin: 2.5rem auto 0 auto;
       background: #fff;
       border-radius: 1rem;
-      box-shadow: 0 2px 12px #0001;
+      box-shadow: 0 2px 12px #e6002322;
       padding: 2rem;
     }
     .input {
@@ -59,6 +60,7 @@
       border: 1px solid #e5e7eb;
       border-radius: 0.5rem;
       font-size: 1rem;
+      background: var(--secondary);
     }
     .btn {
       padding: 0.7rem 1.2rem;
@@ -72,7 +74,7 @@
       transition: background .2s;
     }
     .btn:hover {
-      background: #f59e42;
+      background: var(--accent);
     }
     .link {
       color: var(--accent);
@@ -88,7 +90,7 @@
       justify-content: space-around;
       z-index: 50;
       height: 4.2rem;
-      box-shadow: 0 -2px 12px #0001;
+      box-shadow: 0 -2px 12px #e6002322;
     }
     .nav-btn {
       flex: 1 1 0;
@@ -113,33 +115,30 @@
       margin: 1.5rem auto;
       background: #fff;
       border-radius: 1rem;
-      box-shadow: 0 2px 12px #0001;
+      box-shadow: 0 2px 12px #e6002322;
       padding: 1.2rem 1rem 1.2rem 1rem;
     }
     .menu-grid, .menu-table {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
+      grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
       gap: 1rem;
     }
     .menu-item, .menu-table-item {
-      background: #f9fafb;
-      border-radius: 0.7rem;
-      box-shadow: 0 2px 8px #0001;
+      background: #fff;
+      border-radius: 1rem;
+      border: 1.5px solid #f0f0f0;
+      box-shadow: 0 4px 16px #e6002322;
       padding: 1rem 0.5rem 0.7rem 0.5rem;
       text-align: center;
+      transition: box-shadow .2s;
     }
     .menu-item img, .menu-table-item img {
       width: 100%;
-      height: 100px;
+      height: 110px;
       object-fit: cover;
       border-radius: 0.6rem;
       margin-bottom: .3rem;
       background: #eee;
-    }
-    .menu-item .btn, .menu-table-item .btn {
-      width: 42%;
-      margin: .25rem 2px;
-      font-size: 1rem;
     }
     .cart-list, .rekap-list, .top10-list {
       list-style: none;
@@ -153,14 +152,17 @@
       align-items: center;
       justify-content: space-between;
     }
+    .rekap-table { width:100%; border-collapse:collapse; font-size:.98rem; margin-top:1rem;}
+    .rekap-table th, .rekap-table td { border:1px solid #ddd; padding:.5em .7em; text-align:left;}
+    .rekap-table th { background:#eee; font-weight:bold;}
     .text-center { text-align: center; }
     .mb-2 { margin-bottom: .5rem; }
     .mb-3 { margin-bottom: .8rem; }
     .mb-4 { margin-bottom: 1.2rem; }
     .mt-2 { margin-top: .5rem; }
     .mt-4 { margin-top: 1.2rem; }
-    .mt-6 { margin-top: 2rem; }
-    .fw-bold { font-weight: bold; }
+    .mt-5 { margin-top: 2.1rem; }
+    .fw-bold { font-weight: bold; color: var(--primary);}
     .text-sm { font-size: .93rem; }
     .text-xs { font-size: .83rem; }
     .modal-bg {
@@ -175,7 +177,7 @@
     .modal-content {
       background: #fff;
       border-radius: .8rem;
-      box-shadow: 0 6px 32px #0003;
+      box-shadow: 0 6px 32px #e6002322;
       padding: 2rem 1.2rem 1.5rem 1.2rem;
       min-width: 270px;
       max-width: 90vw;
@@ -191,7 +193,7 @@
   <!-- LOGIN -->
   <div id="loginPage" class="page active">
     <div class="form-box">
-      <h2 class="font-cafe text-center mb-3" style="color:var(--primary)">Login MissBar Cafe</h2>
+      <h2 class="font-cafe text-center mb-3">Login MissBar Cafe</h2>
       <form onsubmit="event.preventDefault(); loginUser();">
         <input id="loginUsername" class="input" type="text" placeholder="Username" required>
         <input id="loginPassword" class="input" type="password" placeholder="Password" required>
@@ -225,7 +227,7 @@
   <!-- REGISTER -->
   <div id="registerPage" class="page">
     <div class="form-box">
-      <h2 class="font-cafe text-center mb-3" style="color:var(--secondary)">Daftar Akun</h2>
+      <h2 class="font-cafe text-center mb-3" style="color:var(--accent)">Daftar Akun</h2>
       <form onsubmit="event.preventDefault(); registerUser();">
         <input id="regUsername" class="input" type="text" placeholder="Username" required>
         <input id="regPassword" class="input" type="password" placeholder="Password" required>
@@ -240,7 +242,10 @@
   <!-- MENU -->
   <div id="menuPage" class="page">
     <div class="container">
-      <h2 class="font-cafe text-center mb-4" style="color:var(--primary)">Daftar Menu</h2>
+      <h2 class="font-cafe text-center mb-4">Daftar Menu</h2>
+      <div class="mb-3 flex gap-2">
+        <button class="btn" onclick="openMenuModal()">Tambah Menu</button>
+      </div>
       <div id="menuList" class="menu-grid"></div>
     </div>
   </div>
@@ -248,7 +253,7 @@
   <!-- KASIR -->
   <div id="kasirPage" class="page">
     <div class="container">
-      <h2 class="font-cafe text-center mb-4" style="color:var(--secondary)">Kasir</h2>
+      <h2 class="font-cafe text-center mb-4" style="color:var(--accent)">Kasir</h2>
       <div id="menuTable" class="menu-table mb-4"></div>
       <h3 class="fw-bold mb-2">Keranjang</h3>
       <ul id="cartList" class="cart-list mb-2"></ul>
@@ -262,7 +267,7 @@
   <!-- REKAP -->
   <div id="rekapPage" class="page">
     <div class="container">
-      <h2 class="font-cafe text-center mb-4" style="color:var(--primary)">Rekap Penjualan</h2>
+      <h2 class="font-cafe text-center mb-4">Rekap Penjualan</h2>
       <div class="mb-3 flex flex-wrap gap-2 items-center text-sm">
         <label>Periode:</label>
         <input type="date" id="rekapStart" class="input" style="width:auto;max-width:130px;padding:.3rem .7rem;">
@@ -275,6 +280,10 @@
         <h3 class="fw-bold mb-2">Top 10 Penjualan</h3>
         <ol id="top10List" class="top10-list"></ol>
       </div>
+      <div class="mt-5">
+        <h3 class="fw-bold mb-2">History Penjualan Per Tanggal</h3>
+        <table id="rekapHistoryTable" class="rekap-table"></table>
+      </div>
     </div>
   </div>
 
@@ -286,7 +295,22 @@
       <p class="fw-bold text-center mb-2">TOTAL: Rp <span id="checkoutTotal"></span></p>
       <div class="flex" style="justify-content:space-between;">
         <button onclick="confirmCheckout()" class="btn" style="background:var(--accent)">OK</button>
-        <button onclick="closeCheckoutModal()" class="btn" style="background:var(--secondary)">Batal</button>
+        <button onclick="closeCheckoutModal()" class="btn" style="background:var(--secondary);color:#222">Batal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL TAMBAH/EDIT MENU -->
+  <div id="menuModal" class="modal-bg" style="display:none">
+    <div class="modal-content" style="max-width:450px">
+      <h2 id="menuModalTitle" class="fw-bold text-center mb-3">Tambah Menu</h2>
+      <input id="menuNama" class="input" placeholder="Nama Menu" required>
+      <input id="menuHargaPanas" class="input" placeholder="Harga Panas" type="number">
+      <input id="menuHargaEs" class="input" placeholder="Harga Es" type="number">
+      <input id="menuGambar" class="input" placeholder="URL Gambar">
+      <div class="flex" style="justify-content:space-between;">
+        <button onclick="saveMenuEdit()" class="btn">Simpan</button>
+        <button onclick="closeMenuModal()" class="btn" style="background:var(--secondary);color:#222">Batal</button>
       </div>
     </div>
   </div>
@@ -317,44 +341,6 @@
 
   <!-- SCRIPT -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script>
-  // Patch agar render otomatis & nav bawah aktif
-  function setActiveNav(id) {
-    ['navMenu','navKasir','navRekap'].forEach(nid=>{
-      const el = document.getElementById(nid);
-      if(el) el.classList.remove('active');
-    });
-    if(id) {
-      const el = document.getElementById(id);
-      if(el) el.classList.add('active');
-    }
-  }
-  // Ini override showPage dari app.js!
-  window.showPage = function(id) {
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    const target = document.getElementById(id+'Page');
-    if(target) target.classList.add('active');
-    // Nav show/hide
-    const nav = document.getElementById('mainNav');
-    if(nav) nav.style.display = (id==='login'||id==='register') ? 'none' : '';
-    // Active nav
-    setActiveNav(id==='menu'?'navMenu':id==='kasir'?'navKasir':id==='rekap'?'navRekap':null);
-    // Render otomatis
-    if(id==='menu' && typeof renderMenuList==='function') renderMenuList();
-    if(id==='kasir' && typeof renderMenuTable==='function') renderMenuTable();
-    if(id==='kasir' && typeof renderCart==='function') renderCart();
-    if(id==='kasir' && typeof renderTempTrans==='function') renderTempTrans();
-    if(id==='rekap' && typeof renderRekap==='function') renderRekap();
-  }
-  // Pastikan, saat fetchMenus selesai, jika sedang di halaman menu/kasir, render ulang!
-  const origFetchMenus = window.fetchMenus;
-  window.fetchMenus = async function() {
-    await origFetchMenus();
-    const active = document.querySelector('.page.active');
-    if(active && active.id==='menuPage' && typeof renderMenuList==='function') renderMenuList();
-    if(active && active.id==='kasirPage' && typeof renderMenuTable==='function') renderMenuTable();
-  }
-</script>
   <script src="app.js"></script>
 </body>
 </html>
