@@ -357,6 +357,11 @@ function renderTempTrans() {
   });
 }
 
+function toggleTransDetail(header) {
+  const detail = header.nextElementSibling;
+  detail.style.display = detail.style.display === 'none' ? 'block' : 'none';
+}
+
 // ========== Cetak Struk ==========
 function printSingleStruk(index) {
   const trx = tempTrans[index];
