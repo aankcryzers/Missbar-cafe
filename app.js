@@ -96,19 +96,25 @@ async function fetchMenus() {
   }
 }
 
-// --- Page Show/Hide ---
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => {
     p.classList.add('opacity-0');
-    setTimeout(() => p.classList.add('hidden'), 300);
+    // Jangan langsung setTimeout di sini!
+    // Nanti timeout-nya bentrok dan saling menimpa
+    setTimeout(() => {
+      if (p.id !== id + 'Page') {
+        p.classList.add('hidden');
+      }
+    }, 300);
   });
   const target = document.getElementById(id + 'Page');
   console.log('showPage', id, 'target:', target);
   if (!target) return;
-  target.classList.remove('hidden');
-  setTimeout(() => target.classList.remove('opacity-0'), 10);
-  if (id === 'menu') renderMenuTable();
-  if (id === 'kasir') { renderMenuList(); renderTempTrans(); }
+  // Unhide target SETELAH semua page lain di-hide (setelah 300ms)
+  setTimeout(() => {
+    target.classList.remove('hidden');
+    setTimeout(() => target.classList.remove('opacity-0'), 10);
+  }, 300);
 }
 
 // --- Menu List (Kasir Pilihan) ---
