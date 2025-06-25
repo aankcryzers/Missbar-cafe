@@ -59,6 +59,23 @@ function renderMenuList() {
     menuList.appendChild(div);
   });
 }
+function renderMenuTable() {
+  const menuTable = document.getElementById('menuTable');
+  if (!menuTable) return;
+
+  menuTable.innerHTML = '';
+  menus.forEach((menu, i) => {
+    const div = document.createElement('div');
+    div.className = 'border p-2 bg-white rounded shadow';
+    div.innerHTML = `
+      <img src="${menu.gambar}" class="w-full h-24 object-cover rounded mb-2">
+      <h4 class="font-bold font-diary text-pink-700">${menu.nama}</h4>
+      <p class="text-sm text-gray-600">Panas: Rp ${menu.hargapanas}</p>
+      <p class="text-sm text-gray-600">Es: Rp ${menu.hargaes}</p>`;
+    menuTable.appendChild(div);
+  });
+}
+
 
 function addToCart(i, type) {
   const m = menus[i];
