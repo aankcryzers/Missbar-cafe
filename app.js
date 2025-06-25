@@ -350,6 +350,9 @@ function renderTempTrans() {
         ${trx.items.map(item => `<li>${item.name} x${item.qty} = Rp ${item.qty * item.price}</li>`).join('')}
       </ul>
       <button onclick="printSingleStruk(${i})" class="text-sm btn mt-2" style="background:var(--accent);">Cetak Struk</button>
+/* Accordion effect (optional) */
+#tempTransList > div { transition: box-shadow 0.2s; }
+#tempTransList > div:hover { box-shadow: 0 2px 12px #0001; }
     `;
     list.appendChild(div);
   });
