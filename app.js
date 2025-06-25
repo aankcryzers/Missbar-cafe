@@ -89,6 +89,34 @@ async function fetchMenus() {
   }
 }
 
+function renderTempTrans() {
+  const list = document.getElementById('tempTransList');
+  if (!list) return;
+  list.innerHTML = '';
+  tempTrans.forEach((trx, i) => {
+    const detailId = `transDetail${i}`;
+    const collapsed = trx._collapsed === undefined ? true : trx._collapsed;
+    const div = document.createElement('div');
+    div.className = 'border p-2 rounded bg-white mb-2';
+    const totalTrx = trx.items.reduce((sum, it) => sum + it.qty * it.price, 0);
+    div.innerHTML = `
+      <div class="fw-bold" style="cursor:pointer;" onclick="toggleTransDetail(${i})">
+        ${trx.date} ${trx.time} - <em>${trx.user}</em>
+        <span style="float:right; color:var(--accent);font-size:1.2em;">${collapsed ? '+' : '−'}</span>
+      </div>
+      <div id="${detailId}" style="display:${collapsed ? 'none' : 'block'};margin-top:.5em;">
+        <ul class="text-sm">
+          ${trx.items.map(item => `<li>${item.name} x${item.qty} = Rp ${item.qty * item.price}</li>`).join('')}
+        </ul>
+        <div class="text-end fw-bold mb-2" style="text-align:right;">Total: Rp ${totalTrx}</div>
+        <button onclick="printSingleStruk(${i})" class="text-sm btn struk-btn mt-2" style="background:var(--accent);">Cetak Struk</button>
+        ${i === 0 ? `<button onclick="hapusTransaksiTerakhir()" class="btn mt-2" style="background:#e60023;margin-left:7px;">Hapus Transaksi</button>` : ''}
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
 // ========== Menu Tambah/Edit/Hapus ==========
 let editMenuIndex = null;
 function openMenuModal(i){
