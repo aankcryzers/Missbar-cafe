@@ -282,18 +282,6 @@ function checkoutCart() {
   saveToLocal();
   renderTempTrans();
 
-  // --- Tambahkan POST ke Google Apps Script ---
-  const form = new FormData();
-  form.append("action", "transaksi");
-  form.append("data", JSON.stringify(trx));
-  fetch(sheetURL, { method: 'POST', body: form })
-    .then(res => res.text())
-    .then(txt => {
-      // Optional: tampilkan konfirmasi
-      // alert(txt);
-    })
-    .catch(() => alert("Tersimpan lokal, gagal upload ke spreadsheet."));
-
   cart = [];
   renderCart();
   renderCartPopup();
