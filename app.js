@@ -1,5 +1,5 @@
 // == KONFIGURASI ==
-const sheetURL = "https://script.google.com/macros/s/AKfycbw.../exec"; // Ganti dengan URL Apps Script kamu
+const sheetURL = "https://script.google.com/macros/s/AKfycbzuYVu7HgkCiiEpQajhGxqjSrMSDbUnFkCP05QGPRYp558pYXVU4TMUJ9pDSfCf_9BX/exec"; // Ganti dengan link script kamu
 
 // == STATE ==
 let user = null;
@@ -157,7 +157,8 @@ function renderCart() {
   });
   // Total
   const total = cart.reduce((a, b) => a + (b.qty * b.harga), 0);
-  document.getElementById("cartPopupTotal").textContent = total;
+  const totalElem = document.getElementById("cartPopupTotal");
+  if (totalElem) totalElem.textContent = total;
 }
 function removeCart(idx) {
   cart.splice(idx, 1);
@@ -226,7 +227,7 @@ async function confirmCheckout() {
   renderCart();
   renderTempTrans();
   closeCheckoutModal();
-  toggleCartPopup(); // Tutup popup cart
+  document.getElementById("cartPopup").classList.remove("active");
   fetchSales(); // Update rekap
   alert("Transaksi sukses!");
 }
@@ -296,7 +297,7 @@ function renderRekap() {
   }
 }
 
-// == MENU MODAL (TAMBAH MENU, dummy, tidak ke spreadsheet) ==
+// == MENU MODAL (TAMBAH MENU) ==
 function openMenuModal() {
   document.getElementById("menuModal").style.display = "flex";
   document.getElementById("menuNama").value = "";
@@ -329,7 +330,7 @@ document.getElementById("navMenu").onclick = () => { showPage("menu"); fetchMenu
 document.getElementById("navKasir").onclick = () => { showPage("kasir"); fetchMenus(); renderMenuTable(); };
 document.getElementById("navRekap").onclick = () => { showPage("rekap"); fetchSales(); };
 
-// == SHORTCUT PAGE CONTROL ==
+// == SHORTCUT PAGE CONTROL FOR HTML ONCLICK/ONSUBMIT ==
 window.showPage = showPage;
 window.logoutUser = logoutUser;
 window.loginUser = loginUser;
