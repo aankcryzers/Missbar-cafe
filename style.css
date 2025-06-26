@@ -40,7 +40,7 @@ html, body {
 
 /* 3. FORM LOGIN & REGISTER */
 .max-w-sm {
-  max-width: 24rem;
+  max-width: 22rem;
 }
 .mx-auto { margin-left: auto; margin-right: auto; }
 .mt-20 { margin-top: 5rem; }
