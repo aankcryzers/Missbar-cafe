@@ -142,7 +142,6 @@ function exportTransaksiExcel() {
       exportData.push({
         Tanggal: trx.date,
         Waktu: trx.time,
-        User: trx.user,
         Menu: item.name,
         Qty: item.qty,
         Harga: item.price,
