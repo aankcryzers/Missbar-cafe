@@ -117,11 +117,12 @@ function renderTempTrans() {
   });
 }
 
-function exportRekapExcel() {
-  // Ambil data sesuai filter
+function exportTransaksiExcel() {
+  // Ambil filter tanggal
   const start = document.getElementById('rekapStart')?.value;
   const end = document.getElementById('rekapEnd')?.value;
   let data = sales;
+  // Filter tanggal
   if (start && end) {
     function toISO(d) {
       if (!d) return '';
@@ -134,26 +135,26 @@ function exportRekapExcel() {
       return (!start || tgl >= start) && (!end || tgl <= end);
     });
   }
-  // Rekap per tanggal
-  const daily = {};
-  data.forEach(trx=>{
-    if(!daily[trx.date]) daily[trx.date]={total:0, count:0};
-    daily[trx.date].total += trx.items.reduce((sum,it)=>sum+it.qty*it.price,0);
-    daily[trx.date].count ++;
+  // Buat array untuk setiap item transaksi
+  const exportData = [];
+  data.forEach(trx => {
+    trx.items.forEach(item => {
+      exportData.push({
+        Tanggal: trx.date,
+        Waktu: trx.time,
+        User: trx.user,
+        Menu: item.name,
+        Qty: item.qty,
+        Harga: item.price,
+        Subtotal: item.qty * item.price
+      });
+    });
   });
-  const sorted = Object.entries(daily).sort((a,b)=>new Date(a[0]) - new Date(b[0]));
-  // Buat array untuk SheetJS
-  const exportData = sorted.map(([tgl, d]) => ({
-    Tanggal: tgl,
-    'Jumlah Transaksi': d.count,
-    'Total Omzet': d.total
-  }));
-  if(exportData.length === 0) return alert("Tidak ada data untuk diexport.");
-  // Buat worksheet & workbook
+  if(exportData.length === 0) return alert("Tidak ada transaksi untuk diexport.");
   const ws = XLSX.utils.json_to_sheet(exportData);
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Rekap Penjualan");
-  XLSX.writeFile(wb, `rekap_penjualan_${start||'all'}_${end||'all'}.xlsx`);
+  XLSX.utils.book_append_sheet(wb, ws, "Transaksi");
+  XLSX.writeFile(wb, `transaksi_detail_${start||'all'}_${end||'all'}.xlsx`);
 }
 
 
