@@ -118,11 +118,9 @@ function renderTempTrans() {
 }
 
 function exportTransaksiExcel() {
-  // Ambil filter tanggal
   const start = document.getElementById('rekapStart')?.value;
   const end = document.getElementById('rekapEnd')?.value;
   let data = sales;
-  // Filter tanggal
   if (start && end) {
     function toISO(d) {
       if (!d) return '';
@@ -135,27 +133,25 @@ function exportTransaksiExcel() {
       return (!start || tgl >= start) && (!end || tgl <= end);
     });
   }
-  // Buat array untuk setiap item transaksi
+  // Buat array untuk setiap item transaksi (tanpa user)
   const exportData = [];
   data.forEach(trx => {
     trx.items.forEach(item => {
       exportData.push({
         Tanggal: trx.date,
         Waktu: trx.time,
-        Menu: item.name,
+        Item: item.name,
         Qty: item.qty,
         Harga: item.price,
-        Subtotal: item.qty * item.price
+        Total: item.qty * item.price
       });
     });
   });
   if(exportData.length === 0) return alert("Tidak ada transaksi untuk diexport.");
   const ws = XLSX.utils.json_to_sheet(exportData);
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Transaksi");
-  XLSX.writeFile(wb, `transaksi_detail_${start||'all'}_${end||'all'}.xlsx`);
+  XLSX.utils.book.writeFile(wb, `transaksi_${start||'all'}_${end||'all'}.xlsx`);
 }
-
 
 // ========== Menu Tambah/Edit/Hapus ==========
 let editMenuIndex = null;
