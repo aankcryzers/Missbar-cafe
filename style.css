@@ -58,12 +58,6 @@ input:-webkit-autofill:hover {
 }
 
 /* --- Menu Grid --- */
-:root {
-  --accent: #ff5e78;
-  --bg: #fefefe;
-  --shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-  --border: #f2f2f2;
-}
 
 .menu-table {
   display: grid;
