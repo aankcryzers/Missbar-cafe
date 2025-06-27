@@ -316,13 +316,24 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
 }
 @media (max-width:600px) {
   .cart-total-info {
-    font-size: 1.01rem;
-    bottom: 140px;
-  }
-  .cart-checkout-btn {
+  /* Hapus posisi sticky dan bottom! */
+  margin-top: 0.2rem;
+  margin-bottom: 1.3rem;
+  padding: 0.8rem 0 0.8rem 0;
+  border-top: none;
+  border-bottom: 2px solid #eee;
+  background: #fff;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.14rem;
+  font-weight: 600;
+}
+@media (max-width:600px) {
+  .cart-total-info {
     font-size: 1rem;
-    padding: 0.65em 1.1em;
-    bottom: 140px;
+    margin-bottom: 1.1rem;
   }
 }
 
