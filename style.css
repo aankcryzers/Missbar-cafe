@@ -504,3 +504,16 @@ a:hover { color: var(--primary); text-decoration: underline; }
   .btn-add-menu { bottom: 70px; right: 16px; }
   .popup-add-menu { padding: 1.2rem; }
 }
+.modal-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.3);
+  display: none; align-items:center; justify-content:center;
+  backdrop-filter: blur(5px); z-index:600;
+}
+.modal-bg.active { display: flex; }
+.modal-content {
+  background:#fff; border-radius:20px; padding:1.8rem;
+  max-width:450px; width:90%; box-shadow:0 8px 30px rgba(0,0,0,0.15);
+}
+@media (max-width:600px) {
+  .container, .page { padding-bottom:30px; }
+}
