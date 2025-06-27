@@ -5,7 +5,7 @@
   --nav-bg: #fff;
   --nav-border: #d3d3d3;
   --nav-active: #e60023;
-  --cart-popup-max-height: 80vh;
+  --cart-popup-max-height: 180vh;
 }
 
 /* --- Responsive Form & Input */
@@ -285,32 +285,31 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
   .cart-qty-btn { width: 32px; height: 32px; font-size: 1.1rem;}
   .cart-remove-btn { width: 28px; height: 28px; font-size: 1rem;}
 }
-/* --- Total & Checkout dinaikkan --- */
+/* === PATCH: Checkout & Cart FAB === */
 .cart-total-info {
-  margin-top: 1.1rem;
-  margin-bottom: 0.7rem;
-  padding-top: 0.8rem;
-  border-top: 2px solid #eee;
-  background: #fff;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
   position: sticky;
-  bottom: 28px;
+  bottom: 96px; /* Naik 4cm dari bawah layar */
   z-index: 3;
-  font-size: 1.14rem;
-  font-weight: 600;
 }
-.cart-checkout-btn {
-  background: #2e7d32;
+@media (max-width:600px) {
+  .cart-total-info { bottom: 96px; }
+}
+.cart-fab {
+  position: fixed;
+  top: 22px;
+  right: 22px;
+  bottom: unset;
+  z-index: 300;
+  background: var(--accent);
   color: #fff;
-  border-radius: 0.5rem;
-  font-size: 1.07rem;
-  padding: 0.7em 1.3em;
-  font-weight: 700;
-  margin-left: 1.1rem;
-  transition: background 0.18s;
+  border-radius: 50%;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px #b8326022;
+  cursor: pointer;
 }
 .cart-checkout-btn:hover, .cart-checkout-btn:focus {
   background: #26932e;
