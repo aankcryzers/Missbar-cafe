@@ -254,7 +254,7 @@ input:-webkit-autofill:hover {
   box-shadow: 0 -4px 32px #2223;
   padding: 22px 18px 18px 18px;
   min-height: 120px;
-  max-height: 45vh;
+  max-height: 80vh;
   overflow-y: auto;
   position: relative;
   animation: popupUp .26s;
