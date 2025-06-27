@@ -7,14 +7,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- LOGIN -->
-  <div id="loginPage" class="page">
+  <!-- LOGIN PAGE -->
+  <div id="loginPage" class="page active">
     <div class="form-box">
       <h2 class="font-cafe text-center mb-3">Login MissBar Cafe</h2>
       <form onsubmit="event.preventDefault(); loginUser();">
@@ -46,7 +46,7 @@
     </div>
   </div>
 
-  <!-- REGISTER -->
+  <!-- REGISTER PAGE -->
   <div id="registerPage" class="page">
     <div class="form-box">
       <h2 class="font-cafe text-center mb-3" style="color:var(--accent)">Daftar Akun</h2>
@@ -61,7 +61,7 @@
     </div>
   </div>
 
-  <!-- MENU -->
+  <!-- MENU PAGE -->
   <div id="menuPage" class="page">
     <div class="container">
       <h2 class="font-cafe text-center mb-4">Daftar Menu</h2>
@@ -72,7 +72,7 @@
     </div>
   </div>
 
-  <!-- KASIR -->
+  <!-- KASIR PAGE -->
   <div id="kasirPage" class="page">
     <div class="container">
       <h2 class="font-cafe text-center mb-4" style="color:var(--accent)">Kasir</h2>
@@ -108,7 +108,7 @@
     </div>
   </div>
 
-  <!-- REKAP -->
+  <!-- REKAP PAGE -->
   <div id="rekapPage" class="page">
     <div class="container">
       <h2 class="font-cafe text-center mb-4">Rekap Penjualan</h2>
