@@ -297,7 +297,7 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
   align-items: center;
   justify-content: space-between;
   position: sticky;
-  bottom: 28px;
+  bottom: 148px;
   z-index: 3;
   font-size: 1.14rem;
   font-weight: 600;
@@ -318,11 +318,12 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
 @media (max-width:600px) {
   .cart-total-info {
     font-size: 1.01rem;
-    bottom: 80px;
+    bottom: 180px;
   }
   .cart-checkout-btn {
     font-size: 1rem;
     padding: 0.65em 1.1em;
+    bottom: 180px;
   }
 }
 
