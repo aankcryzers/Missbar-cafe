@@ -484,6 +484,12 @@ function showPage(id) {
   const nav = document.getElementById('mainNav');
   if(nav) nav.style.display = (id==='login'||id==='register') ? 'none' : '';
   setActiveNav(id==='menu'?'navMenu':id==='kasir'?'navKasir':id==='rekap'?'navRekap':null);
+  // PATCH: Tutup modal tambah/edit menu jika berpindah page
+  if (typeof closeMenuModal === 'function') closeMenuModal();
+  // PATCH: Tutup popup kasir/cart jika ada
+  if (document.getElementById('cartPopup')) document.getElementById('cartPopup').classList.remove('active');
+  if (document.getElementById('hotColdPopup')) document.getElementById('hotColdPopup').style.display = 'none';
+  // Render ulang sesuai page
   if(id==='menu' && typeof renderMenuList==='function') renderMenuList();
   if(id==='kasir' && typeof renderMenuTable==='function') renderMenuTable();
   if(id==='kasir' && typeof renderCart==='function') renderCart();
