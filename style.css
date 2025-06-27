@@ -7,37 +7,8 @@
   --nav-active: #e60023;
   --cart-popup-max-height: 80vh;
 }
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  background: #f8fafc;
-  font-family: 'Montserrat', Arial, sans-serif;
-  color: #222;
-  min-height: 100vh;
-}
-.font-cafe {
-  font-family: 'Montserrat', Arial, sans-serif;
-  font-weight: bold;
-  letter-spacing: 1px;
-}
 
-/* ----------- PAGE --------- */
-.page {
-  min-height: 100vh;
-  padding-bottom: 4.5rem;
-  display: none;
-  animation: fadein .2s;
-}
-.page.active {
-  display: block;
-}
-@keyframes fadein {
-  from { opacity: 0 }
-  to   { opacity: 1 }
-}
-
-/* ----------- FORM BOX & INPUT --------- */
+/* --- Responsive Form & Input */
 .form-box {
   max-width: 22rem;
   margin: 2.5rem auto 0 auto;
@@ -74,145 +45,87 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
   .input {
     font-size: 1rem;
     padding: 0.92rem 0.85rem;
-    min-width: 0;
     max-width: 100vw !important;
     width: 100% !important;
   }
 }
 
-/* ----------- BUTTON --------- */
-.btn {
-  padding: 0.7rem 1.2rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 0.5rem;
-  background: var(--primary);
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background .2s;
-  outline: none;
-  display: inline-block;
-}
-.btn:hover, .btn:focus {
-  background: var(--accent);
-}
-.btn:active {
-  background: #b83260cc;
-}
-.btn.w-full {
-  width: 100%;
-}
-.link {
-  color: var(--accent);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-/* ----------- NAVIGATION BAR --------- */
-.nav-bottom {
-  position: fixed;
-  left: 0; right: 0; bottom: 0;
-  background: var(--nav-bg);
-  border-top: 1.5px solid var(--nav-border);
-  display: flex;
-  justify-content: space-around;
-  z-index: 50;
-  height: 4.2rem;
-  box-shadow: 0 -2px 12px #e6002322;
-}
-.nav-btn {
-  flex: 1 1 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #888;
-  background: none;
-  border: none;
-  font-size: .86rem;
-  cursor: pointer;
-  transition: color .2s;
-  height: 100%;
-}
-.nav-btn.active, .nav-btn:focus {
-  color: var(--nav-active);
-}
-.nav-btn svg { display: block; margin-bottom: .2rem;}
-
-/* ----------- CONTAINER --------- */
-.container {
-  max-width: 900px;
-  margin: 1.5rem auto;
-  background: #fff;
-  border-radius: 1rem;
-  box-shadow: 0 2px 12px #e6002322;
-  padding: 1.2rem 1rem 1.2rem 1rem;
-  box-sizing: border-box;
-}
-@media (max-width: 600px) {
-  .container { border-radius: 0; box-shadow: none; }
-}
-
-/* ----------- MENU --------- */
-.menu-grid, .menu-table {
+/* --- Kasir Menu Card --- */
+.menu-table {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
   gap: 1rem;
 }
-.menu-item, .menu-table-item {
+.menu-table-item {
   background: #fff;
   border-radius: 1rem;
   border: 1.5px solid #f0f0f0;
   box-shadow: 0 4px 16px #e6002322;
   padding: 1rem 0.5rem 0.7rem 0.5rem;
   text-align: center;
-  transition: box-shadow .2s;
+  transition: transform .18s, box-shadow .2s, filter .2s, opacity .17s;
+  cursor: pointer;
+  position: relative;
+  min-height: 210px;
 }
-.menu-item img, .menu-table-item img {
+.menu-table-item.active {
+  filter: blur(1px) brightness(0.93) opacity(0.65);
+  transform: scale(1.09);
+  z-index: 12;
+}
+.menu-img-wrap {
   width: 100%;
-  height: 110px;
-  object-fit: cover;
-  border-radius: 0.6rem;
-  margin-bottom: .3rem;
-  background: #eee;
-}
-
-/* ----------- CART FAB --------- */
-.cart-fab {
-  position: fixed;
-  top: 1rem;
-  right: 1.2rem;
-  background: var(--accent);
-  color: #fff;
-  border-radius: 50%;
-  width: 52px;
-  height: 52px;
-  z-index: 120;
+  height: 130px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 12px #b8326028;
-  cursor: pointer;
-  transition: box-shadow .2s, background .2s;
+  background: #eee;
+  border-radius: 0.6rem;
+  overflow: hidden;
 }
-.cart-fab:hover { background: var(--primary);}
-.cart-badge {
-  position: absolute;
-  top: 7px; right: 7px;
-  background: #e60023;
-  color: #fff;
-  border-radius: 50%;
-  padding: 2px 7px;
-  font-size: 0.95em;
-  font-weight: bold;
-  min-width: 22px;
-  text-align: center;
-  pointer-events: none;
-  border: 2px solid #fff;
+.menu-img {
+  max-width: 98%;
+  max-height: 120px;
+  object-fit: contain; /* gambar tidak pernah kepotong */
+  display: block;
+}
+@media (max-width: 540px) {
+  .menu-img-wrap { height: 92px;}
+  .menu-img { max-height: 80px;}
 }
 
-/* ----------- CART POPUP --------- */
+/* --- Hot/Cold Popup --- */
+.hotcold-popup-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 111;
+  background: rgba(0,0,0,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadein .17s;
+}
+.hotcold-popup {
+  background: #fff;
+  border-radius: 18px;
+  padding: 1.5rem 1.1rem;
+  box-shadow: 0 6px 32px #2223;
+  min-width: 200px;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+}
+.hotcold-popup .btn {
+  min-width: 155px;
+  font-size: 1.08rem;
+}
+@media (max-width: 540px) {
+  .hotcold-popup { min-width: 140px; }
+}
+
+/* --- Cart Popup Tinggi --- */
 .cart-popup-bg {
   display: none;
   position: fixed;
@@ -252,7 +165,8 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
     padding: 16px 7px 10px 7px !important;
   }
 }
-/* --- Cart List Rapi & Jelas --- */
+
+/* --- Cart List & Qty Control --- */
 .cart-list {
   list-style: none;
   padding: 0;
@@ -287,8 +201,6 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
   color: var(--accent);
   font-size: 0.97rem;
 }
-
-/* --- Button + - di Cart --- */
 .cart-qty-group {
   display: flex;
   align-items: center;
@@ -320,8 +232,6 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
   font-size: 1.07rem;
   color: #222;
 }
-
-/* --- Remove Button di Cart --- */
 .cart-remove-btn {
   background: #e60023;
   color: #fff;
@@ -349,8 +259,7 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
   .cart-qty-btn { width: 32px; height: 32px; font-size: 1.1rem;}
   .cart-remove-btn { width: 28px; height: 28px; font-size: 1rem;}
 }
-
-/* --- Total & Checkout --- */
+/* --- Total & Checkout dinaikkan --- */
 .cart-total-info {
   margin-top: 1.1rem;
   margin-bottom: 0.7rem;
@@ -391,6 +300,19 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
   }
 }
 
+/* --- Modal Tambah/Edit Menu Foto --- */
+.menu-img-preview {
+  width: 120px;
+  max-width: 100%;
+  max-height: 120px;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+  margin: 7px auto 0 auto;
+  background: #f3f3f3;
+  box-shadow: 0 2px 8px #b8326010;
+}
+
 /* ----------- UTILITIES --------- */
 .text-center { text-align: center; }
 .fw-bold { font-weight: bold; color: var(--primary);}
@@ -404,35 +326,6 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
 .mt-5 { margin-top: 2.1rem; }
 .mt-6 { margin-top: 2.7rem; }
 
-/* ----------- MODAL --------- */
-.modal-bg {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-.modal-content {
-  background: #fff;
-  border-radius: .8rem;
-  box-shadow: 0 6px 32px #e6002322;
-  padding: 2rem 1.2rem 1.5rem 1.2rem;
-  min-width: 270px;
-  max-width: 90vw;
-  box-sizing: border-box;
-}
-@media (max-width: 600px) {
-  .modal-content { padding: 1rem .3rem; }
-}
-
-/* ----------- TABLE --------- */
-.rekap-table { width:100%; border-collapse:collapse; font-size:.98rem; margin-top:1rem;}
-.rekap-table th, .rekap-table td { border:1px solid #ddd; padding:.5em .7em; text-align:left;}
-.rekap-table th { background:#eee; font-weight:bold;}
-
-/* ----------- ETC --------- */
 ul { padding-left: 1em; }
 ol { padding-left: 1.3em; }
 img { max-width: 100%; border-radius: 10px; box-shadow: 0 2px 12px #e6007710; }
