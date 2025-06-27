@@ -480,17 +480,3 @@ function showPage(id) {
   const nav = document.getElementById('mainNav');
   if(nav) nav.style.display = (id==='login'||id==='register') ? 'none' : '';
 }
-
-window.showPage = function(id) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const target = document.getElementById(id+'Page');
-  if(target) target.classList.add('active');
-  const nav = document.getElementById('mainNav');
-  if(nav) nav.style.display = (id==='login'||id==='register') ? 'none' : '';
-  setActiveNav(id==='menu'?'navMenu':id==='kasir'?'navKasir':id==='rekap'?'navRekap':null);
-  if(id==='menu' && typeof renderMenuList==='function') renderMenuList();
-  if(id==='kasir' && typeof renderMenuTable==='function') renderMenuTable();
-  if(id==='kasir' && typeof renderCart==='function') renderCart();
-  if(id==='kasir' && typeof renderTempTrans==='function') renderTempTrans();
-  if(id==='rekap' && typeof renderRekap==='function') renderRekap();
-};
