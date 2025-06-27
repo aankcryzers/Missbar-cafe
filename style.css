@@ -21,7 +21,7 @@
 
 /* Agar konten tidak ketutup nav bawah di semua halaman */
 .container, .page {
-  padding-bottom: 90px; /* atau lebih jika nav bawah tinggi */
+  padding-bottom: 120px; /* atau lebih jika nav bawah tinggi */
 }
 @media (max-width:600px) {
   .container, .page {
