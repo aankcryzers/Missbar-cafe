@@ -277,11 +277,18 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
   transform: scale(1.09) rotate(-6deg);
 }
 @media (max-width: 600px) {
-  .cart-list li {
-    font-size: 0.98rem;
-    gap: 0.35rem;
-    padding: .6rem 0 .6rem 0;
+  .cart-list {
+  list-style: none;
+  padding: 0;
+  margin: .5rem 0 0 0;
+  width: 100%;
+  padding-bottom: 80px; /* PATCH: Biar bawah list tidak ketutup nav/cart-total-info */
+}
+@media (max-width: 600px) {
+  .cart-list {
+    padding-bottom: 110px; /* PATCH: lebih tinggi di HP */
   }
+}
   .cart-qty-btn { width: 32px; height: 32px; font-size: 1.1rem;}
   .cart-remove-btn { width: 28px; height: 28px; font-size: 1rem;}
 }
