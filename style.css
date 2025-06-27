@@ -405,3 +405,117 @@ a:hover { color: var(--primary); text-decoration: underline; }
   margin-bottom: 4px;
 }
 .text-xs { font-size: 1.01em; }
+
+/* --- Rekap Card --- */
+.rekap-card {
+  background: #fff;
+  border-radius: 1.1rem;
+  box-shadow: 0 2px 16px #b8326022, 0 1.5px 7px #e6002312;
+  padding: 1.6rem 1.3rem 1.2rem 1.3rem;
+  margin-bottom: 1.6rem;
+  transition: box-shadow 0.17s;
+}
+
+.rekap-card h3 {
+  color: var(--accent);
+  font-size: 1.18rem;
+  font-weight: 700;
+  margin-bottom: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rekap-card h3::before {
+  content: '📊';
+  font-size: 1.1em;
+  margin-right: 2px;
+}
+
+/* --- Tabel Rekap Modern --- */
+.rekap-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #faf8fa;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 6px #b8326011;
+  margin-top: 0.6rem;
+  font-size: 0.97rem;
+}
+.rekap-table th, .rekap-table td {
+  padding: 0.82em 1em;
+  text-align: left;
+}
+.rekap-table th {
+  background: #f9e7ef;
+  color: var(--accent);
+  font-weight: 700;
+  position: sticky;
+  top: 0;
+  border-bottom: 2px solid #f1c8da;
+  z-index: 2;
+}
+.rekap-table tr:nth-child(even) {
+  background: #fff;
+}
+.rekap-table tr:nth-child(odd) {
+  background: #faf3fa;
+}
+.rekap-table tr:hover {
+  background: #fff0f6;
+}
+.rekap-table td {
+  border-bottom: 1px solid #f3e4ee;
+}
+.rekap-table tr:last-child td {
+  border-bottom: none;
+}
+@media (max-width: 600px) {
+  .rekap-table th, .rekap-table td {
+    padding: 0.57em 0.6em;
+    font-size: 0.93em;
+  }
+}
+
+/* --- Top 10 List Modern --- */
+.top10-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: top10;
+}
+.top10-list li {
+  display: flex;
+  align-items: center;
+  background: #fdf6fa;
+  border-radius: 12px;
+  box-shadow: 0 1px 7px #b8326012;
+  margin-bottom: 0.62em;
+  padding: 0.92em 1.2em;
+  font-weight: 600;
+  font-size: 1.04em;
+  transition: box-shadow 0.14s, background 0.15s;
+}
+.top10-list li:hover {
+  background: #ffeaf6;
+  box-shadow: 0 3px 18px #b8326020;
+}
+.top10-list li::before {
+  counter-increment: top10;
+  content: counter(top10);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: #fff;
+  width: 2.1em;
+  height: 2.1em;
+  margin-right: 1.1em;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 1.08em;
+  box-shadow: 0 2px 8px #b8326033;
+  letter-spacing: -1px;
+}
