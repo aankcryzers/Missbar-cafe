@@ -318,12 +318,12 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
 @media (max-width:600px) {
   .cart-total-info {
     font-size: 1.01rem;
-    bottom: 180px;
+    bottom: 140px;
   }
   .cart-checkout-btn {
     font-size: 1rem;
     padding: 0.65em 1.1em;
-    bottom: 180px;
+    bottom: 140px;
   }
 }
 
