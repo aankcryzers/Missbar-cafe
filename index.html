@@ -24,7 +24,6 @@
       </form>
       <div class="my-2 text-center text-xs">atau</div>
       <div class="text-center">
-        <!-- Google Sign-In -->
         <div id="g_id_onload"
           data-client_id="596031852783-5pb20oelemtr7g7sdcmh8ievc4pgnuv1.apps.googleusercontent.com"
           data-context="signin"
@@ -77,7 +76,6 @@
   <div id="kasirPage" class="page">
     <div class="container">
       <h2 class="font-cafe text-center mb-4" style="color:var(--accent)">Kasir</h2>
-      <!-- Floating Cart Icon (fixed kanan atas) -->
       <div id="cartFab" class="cart-fab" onclick="toggleCartPopup()">
         <svg width="30" height="30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
@@ -169,53 +167,28 @@
   <!-- NAVIGATION BAR BAWAH -->
   <nav id="mainNav" class="nav-bottom" style="display:none">
     <button class="nav-btn" id="navMenu" onclick="showPage('menu')">
-      <!-- menu icon -->
       <svg width="24" height="24" fill="none" stroke="currentColor"><rect x="4" y="6" width="16" height="2" rx="1"/><rect x="4" y="11" width="16" height="2" rx="1"/><rect x="4" y="16" width="16" height="2" rx="1"/></svg>
       <span class="text-xs">Menu</span>
     </button>
     <button class="nav-btn" id="navKasir" onclick="showPage('kasir')">
-      <!-- cart icon -->
       <svg width="24" height="24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l1.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
       <span class="text-xs">Kasir</span>
     </button>
     <button class="nav-btn" id="navRekap" onclick="showPage('rekap')">
-      <!-- chart icon -->
       <svg width="24" height="24" fill="none" stroke="currentColor"><rect x="3" y="12" width="4" height="8" rx="1"/><rect x="9" y="8" width="4" height="12" rx="1"/><rect x="15" y="4" width="4" height="16" rx="1"/></svg>
       <span class="text-xs">Rekap</span>
     </button>
     <button class="nav-btn" onclick="logoutUser()">
-      <!-- logout icon -->
       <svg width="24" height="24" fill="none" stroke="currentColor"><path d="M17 16l4-4m0 0l-4-4m4 4H7"/><path d="M3 12H7"/></svg>
       <span class="text-xs">Logout</span>
     </button>
   </nav>
+
   <!-- SCRIPT -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="app.js"></script>
   <script>
-    // PATCH JS untuk Hot/Cold Popup & Preview Gambar di Modal
-    let selectedMenuIdx = null;
-    function openHotColdOption(idx) {
-      selectedMenuIdx = idx;
-      document.querySelectorAll('.menu-table-item').forEach((el,i)=>{
-        el.classList.toggle('active', i===idx);
-      });
-      document.getElementById('hotColdPopup').style.display='flex';
-      document.getElementById('selectedMenuName').textContent = menus[idx].nama;
-    }
-    function closeHotCold() {
-      document.getElementById('hotColdPopup').style.display='none';
-      document.querySelectorAll('.menu-table-item').forEach(el=>el.classList.remove('active'));
-    }
-    function chooseHot() {
-      addToCart(selectedMenuIdx, 'hot');
-      closeHotCold();
-    }
-    function chooseCold() {
-      addToCart(selectedMenuIdx, 'cold');
-      closeHotCold();
-    }
-    // PATCH Preview gambar modal
+    // Preview gambar di modal tambah/edit menu
     window.addEventListener('DOMContentLoaded',()=>{
       const fileInput = document.getElementById('menuFileGambar');
       const urlInput = document.getElementById('menuGambar');
