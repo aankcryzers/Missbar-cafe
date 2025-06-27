@@ -446,7 +446,6 @@ function exportTransaksiExcel() {
   XLSX.utils.book_append_sheet(wb, ws, "Transaksi");
   XLSX.writeFile(wb, `transaksi_${start||'all'}_${end||'all'}.xlsx`);
 }
-
 // ========== ONLOAD ==========
 window.onload = () => {
   loadSavedData();
