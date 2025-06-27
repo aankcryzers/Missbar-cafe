@@ -78,8 +78,7 @@
       <h2 class="font-cafe text-center mb-4" style="color:var(--accent)">Kasir</h2>
       <div id="cartFab" class="cart-fab" onclick="toggleCartPopup()">
         <svg width="30" height="30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-          <path d="M1 1h4l1.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6"/>
+          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l1.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6"/>
         </svg>
         <span id="cartBadge" class="cart-badge">0</span>
       </div>
@@ -129,19 +128,6 @@
       <div class="mt-5">
         <h3 class="fw-bold mb-2">History Penjualan Per Tanggal</h3>
         <table id="rekapHistoryTable" class="rekap-table"></table>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL CHECKOUT -->
-  <div id="checkoutModal" class="modal-bg" style="display:none">
-    <div class="modal-content">
-      <h2 class="fw-bold text-center mb-3">Konfirmasi Pembelian</h2>
-      <ul id="checkoutList" class="cart-list mb-2"></ul>
-      <p class="fw-bold text-center mb-2">TOTAL: Rp <span id="checkoutTotal"></span></p>
-      <div class="flex" style="justify-content:space-between;">
-        <button onclick="confirmCheckout()" class="btn" style="background:var(--accent)">OK</button>
-        <button onclick="closeCheckoutModal()" class="btn" style="background:var(--secondary);color:#222">Batal</button>
       </div>
     </div>
   </div>
