@@ -117,41 +117,6 @@ function renderTempTrans() {
   });
 }
 
-function exportTransaksiExcel() {
-  const start = document.getElementById('rekapStart')?.value;
-  const end = document.getElementById('rekapEnd')?.value;
-  let data = sales;
-  if (start && end) {
-    function toISO(d) {
-      if (!d) return '';
-      if (d.includes('-')) return d;
-      const [day, month, year] = d.split('/');
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-    }
-    data = data.filter(trx => {
-      const tgl = toISO(trx.date);
-      return (!start || tgl >= start) && (!end || tgl <= end);
-    });
-  }
-  // Buat array untuk setiap item transaksi (tanpa user)
-  const exportData = [];
-  data.forEach(trx => {
-    trx.items.forEach(item => {
-      exportData.push({
-        Tanggal: trx.date,
-        Waktu: trx.time,
-        Item: item.name,
-        Qty: item.qty,
-        Harga: item.price,
-        Total: item.qty * item.price
-      });
-    });
-  });
-  if(exportData.length === 0) return alert("Tidak ada transaksi untuk diexport.");
-  const ws = XLSX.utils.json_to_sheet(exportData);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book.writeFile(wb, `transaksi_${start||'all'}_${end||'all'}.xlsx`);
-}
 
 // ========== Menu Tambah/Edit/Hapus ==========
 let editMenuIndex = null;
@@ -446,6 +411,44 @@ function renderRekap() {
     html += sorted.map(([tgl,d])=>`<tr><td>${tgl}</td><td>${d.count}</td><td>Rp ${d.total.toLocaleString()}</td></tr>`).join('');
     historyTable.innerHTML = html || '<tr><td colspan="3">Belum ada transaksi</td></tr>';
   }
+}
+
+function exportTransaksiExcel() {
+  // Asumsi sales = array transaksi
+  const start = document.getElementById('rekapStart')?.value;
+  const end = document.getElementById('rekapEnd')?.value;
+  let data = sales;
+  if (start && end) {
+    function toISO(d) {
+      if (!d) return '';
+      if (d.includes('-')) return d;
+      const [day, month, year] = d.split('/');
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+    data = data.filter(trx => {
+      const tgl = toISO(trx.date);
+      return (!start || tgl >= start) && (!end || tgl <= end);
+    });
+  }
+  // Export detail per item (tanpa user)
+  const exportData = [];
+  data.forEach(trx => {
+    if (trx.items) trx.items.forEach(item => {
+      exportData.push({
+        Tanggal: trx.date,
+        Waktu: trx.time,
+        Item: item.name,
+        Qty: item.qty,
+        Harga: item.price,
+        Total: item.qty * item.price
+      });
+    });
+  });
+  if(exportData.length === 0) return alert("Tidak ada transaksi untuk diexport.");
+  const ws = XLSX.utils.json_to_sheet(exportData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Transaksi");
+  XLSX.writeFile(wb, `transaksi_${start||'all'}_${end||'all'}.xlsx`);
 }
 
 // ========== ONLOAD ==========
