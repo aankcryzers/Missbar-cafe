@@ -58,51 +58,124 @@ input:-webkit-autofill:hover {
 }
 
 /* --- Menu Grid --- */
+:root {
+  --accent: #ff5e78;
+  --bg: #fefefe;
+  --shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  --border: #f2f2f2;
+}
+
 .menu-table {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1rem;
-  max-width: 760px;
-  margin: 0 auto 1.5rem auto;
-  padding: 0 10px;
+  max-width: 880px;
+  margin: 0 auto 2rem auto;
+  padding: 0 16px;
 }
+
 .menu-table-item {
-  background: #fff;
-  border-radius: 1rem;
-  border: 1.5px solid #f0f0f0;
-  box-shadow: 0 4px 16px #e6002322;
-  padding: 1rem 0.5rem 0.7rem 0.5rem;
+  background: white;
+  border-radius: 1.2rem;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 1rem;
   text-align: center;
-  transition: transform .18s, box-shadow .2s, filter .2s, opacity .17s;
-  cursor: pointer;
+  transition: all 0.25s ease;
   position: relative;
-  min-height: 210px;
+  overflow: hidden;
 }
+
+.menu-table-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
 .menu-table-item.active {
-  filter: blur(1.5px) brightness(0.91) opacity(0.68);
-  transform: scale(1.10);
+  transform: scale(1.06);
   outline: 2.5px solid var(--accent);
-  box-shadow: 0 0 0 4px #b8326033;
-  z-index: 12;
+  z-index: 10;
+  opacity: 0.95;
 }
+
 .menu-img-wrap {
   width: 100%;
   height: 130px;
+  background: #fafafa;
+  border-radius: 0.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #eee;
-  border-radius: 0.6rem;
   overflow: hidden;
+  margin-bottom: 0.75rem;
 }
+
 .menu-img {
-  max-width: 98%;
-  max-height: 120px;
+  max-width: 90%;
+  max-height: 110px;
   object-fit: contain;
+  transition: transform 0.2s;
 }
+
+.menu-table-item:hover .menu-img {
+  transform: scale(1.05);
+}
+
+.menu-name {
+  font-family: 'BeautyDiary', cursive;
+  font-size: 1.1rem;
+  color: #e91e63;
+  margin-bottom: 0.25rem;
+}
+
+.menu-price {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.menu-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.menu-buttons button {
+  padding: 8px 12px;
+  border-radius: 9999px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+
+.menu-buttons .hot {
+  background: #ff8a65;
+  color: white;
+}
+
+.menu-buttons .cold {
+  background: #4fc3f7;
+  color: white;
+}
+
+.menu-buttons button:hover {
+  filter: brightness(1.1);
+  transform: scale(1.05);
+}
+
 @media (max-width: 540px) {
-  .menu-img-wrap { height: 92px; }
-  .menu-img { max-height: 80px; }
+  .menu-img-wrap {
+    height: 100px;
+  }
+
+  .menu-img {
+    max-height: 90px;
+  }
 }
 
 /* --- Hot/Cold Popup --- */
