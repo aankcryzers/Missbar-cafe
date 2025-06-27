@@ -1,4 +1,4 @@
-/* ==========================
+1/* ==========================
    Missbar Cafe - Elegant Modern CSS
    ========================== */
 
@@ -253,8 +253,8 @@ input:-webkit-autofill:hover {
   border-radius: 18px 18px 0 0;
   box-shadow: 0 -4px 32px #2223;
   padding: 22px 18px 18px 18px;
-  min-height: 120px;
-  max-height: 80vh;
+  min-height: 220px;
+  max-height: 180vh;
   overflow-y: auto;
   position: relative;
   animation: popupUp .26s;
