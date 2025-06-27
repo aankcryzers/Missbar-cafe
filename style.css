@@ -386,8 +386,8 @@ a:hover { color: var(--primary); text-decoration: underline; }
   background: var(--nav-bg);
   border-top: 1.5px solid var(--nav-border);
   z-index: 999;
-  height: 70px;
-  font-size: 1.13em;
+  height: 60px;
+  font-size: 0.81em;
 }
 .nav-btn {
   flex: 1;
@@ -400,11 +400,11 @@ a:hover { color: var(--primary); text-decoration: underline; }
 }
 .nav-btn.active, .nav-btn:focus { color: var(--nav-active); }
 .nav-btn svg {
-  width: 32px !important;
-  height: 32px !important;
-  margin-bottom: 4px;
+  width: 28px !important;
+  height: 28px !important;
+  margin-bottom: 3px;
 }
-.text-xs { font-size: 1.01em; }
+.text-xs { font-size: 0.81em; }
 
 /* --- Rekap Card --- */
 .rekap-card {
