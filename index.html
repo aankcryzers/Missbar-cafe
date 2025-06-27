@@ -136,29 +136,37 @@
 
 
   <!-- REKAP PAGE -->
-  <div id="rekapPage" class="page">
-    <div class="container">
-      <h2 class="font-cafe text-center mb-4">Rekap Penjualan</h2>
-      <div class="mb-3 flex flex-wrap gap-2 items-center text-sm">
-        <label>Periode:</label>
-        <input type="date" id="rekapStart" class="input" style="width:auto;max-width:130px;padding:.3rem .7rem;">
-        <span>-</span>
-        <input type="date" id="rekapEnd" class="input" style="width:auto;max-width:130px;padding:.3rem .7rem;">
-        <button onclick="renderRekap()" class="btn" style="background:var(--accent);font-size:0.93rem;padding:.5rem 1.1rem;">Terapkan</button>
-      </div>
-      <button onclick="exportTransaksiExcel()" class="btn" style="margin-bottom:10px;background:#2e7d32">Export Excel</button>
+<div id="rekapPage" class="page">
+  <div class="container">
+    <h2 class="font-cafe text-center mb-4">Rekap Penjualan</h2>
+    <div class="mb-3 flex flex-wrap gap-2 items-center text-sm">
+      <label>Periode:</label>
+      <input type="date" id="rekapStart" class="input" style="width:auto;max-width:130px;padding:.3rem .7rem;">
+      <span>-</span>
+      <input type="date" id="rekapEnd" class="input" style="width:auto;max-width:130px;padding:.3rem .7rem;">
+      <button onclick="renderRekap()" class="btn" style="background:var(--accent);font-size:0.93rem;padding:.5rem 1.1rem;">Terapkan</button>
+    </div>
+    <button onclick="exportTransaksiExcel()" class="btn" style="margin-bottom:10px;background:#2e7d32">Export Excel</button>
+    
+    <!-- Chart Card -->
+    <div class="rekap-card" style="margin-bottom:1.5rem;">
+      <h3 style="margin-bottom: 1.3rem;">Grafik Penjualan</h3>
       <canvas id="rekapChart" height="125"></canvas>
-      <div class="mt-4">
-        <div class="rekap-card">
-  <h3>Top 10 Penjualan</h3>
-  <ol id="top10List" class="top10-list"></ol>
-</div>
-<div class="rekap-card">
-  <h3>History Penjualan Per Tanggal</h3>
-  <table id="rekapHistoryTable" class="rekap-table"></table>
-     </div>
+    </div>
+    
+    <!-- Top 10 Card -->
+    <div class="rekap-card">
+      <h3>Top 10 Penjualan</h3>
+      <ol id="top10List" class="top10-list"></ol>
+    </div>
+    
+    <!-- History Card -->
+    <div class="rekap-card">
+      <h3>History Penjualan Per Tanggal</h3>
+      <table id="rekapHistoryTable" class="rekap-table"></table>
     </div>
   </div>
+</div>
 
   <!-- MODAL TAMBAH/EDIT MENU -->
   <div id="menuModal" class="modal-bg" style="display:none">
