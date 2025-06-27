@@ -1,3 +1,4 @@
+// ========== Konfigurasi ==========
 const sheetURL = 'https://script.google.com/macros/s/AKfycbzuYVu7HgkCiiEpQajhGxqjSrMSDbUnFkCP05QGPRYp558pYXVU4TMUJ9pDSfCf_9BX/exec';
 let menus = [];
 let cart = [];
@@ -89,35 +90,6 @@ async function fetchMenus() {
   }
 }
 
-function renderTempTrans() {
-  const list = document.getElementById('tempTransList');
-  if (!list) return;
-  list.innerHTML = '';
-  tempTrans.forEach((trx, i) => {
-    const detailId = `transDetail${i}`;
-    const collapsed = trx._collapsed === undefined ? true : trx._collapsed;
-    const div = document.createElement('div');
-    div.className = 'border p-2 rounded bg-white mb-2';
-    const totalTrx = trx.items.reduce((sum, it) => sum + it.qty * it.price, 0);
-    div.innerHTML = `
-      <div class="fw-bold" style="cursor:pointer;" onclick="toggleTransDetail(${i})">
-        ${trx.date} ${trx.time} - <em>${trx.user}</em>
-        <span style="float:right; color:var(--accent);font-size:1.2em;">${collapsed ? '+' : '−'}</span>
-      </div>
-      <div id="${detailId}" style="display:${collapsed ? 'none' : 'block'};margin-top:.5em;">
-        <ul class="text-sm">
-          ${trx.items.map(item => `<li>${item.name} x${item.qty} = Rp ${item.qty * item.price}</li>`).join('')}
-        </ul>
-        <div class="text-end fw-bold mb-2" style="text-align:right;">Total: Rp ${totalTrx}</div>
-        <button onclick="printSingleStruk(${i})" class="text-sm btn struk-btn mt-2" style="background:var(--accent);">Cetak Struk</button>
-        ${i === 0 ? `<button onclick="hapusTransaksiTerakhir()" class="btn mt-2" style="background:#e60023;margin-left:7px;">Hapus Transaksi</button>` : ''}
-      </div>
-    `;
-    list.appendChild(div);
-  });
-}
-
-
 // ========== Menu Tambah/Edit/Hapus ==========
 let editMenuIndex = null;
 function openMenuModal(i){
@@ -127,10 +99,13 @@ function openMenuModal(i){
   document.getElementById('menuHargaPanas').value = i!=null ? menus[i].hargapanas : '';
   document.getElementById('menuHargaEs').value = i!=null ? menus[i].hargaes : '';
   document.getElementById('menuGambar').value = i!=null ? menus[i].gambar : '';
+  document.getElementById('previewMenuImg').src = i!=null ? menus[i].gambar : '';
+  document.getElementById('previewMenuImg').style.display = menus[i]?.gambar ? 'block' : 'none';
   document.getElementById('menuModal').style.display='flex';
 }
 function closeMenuModal(){
   document.getElementById('menuModal').style.display='none';
+  document.getElementById('menuFileGambar').value = '';
 }
 function saveMenuEdit(){
   const nama = document.getElementById('menuNama').value.trim();
@@ -145,7 +120,13 @@ function saveMenuEdit(){
   closeMenuModal();
   renderMenuList();
   renderMenuTable();
-  closeCartPopup(); // otomatis tutup popup jika sedang terbuka
+}
+function deleteMenu(i){
+  if (!confirm("Yakin hapus menu ini?")) return;
+  menus.splice(i,1);
+  saveToLocal();
+  renderMenuList();
+  renderMenuTable();
 }
 
 // ========== MENU PAGE ==========
@@ -157,7 +138,9 @@ function renderMenuList() {
     const div = document.createElement('div');
     div.className = 'menu-item';
     div.innerHTML = `
-      <img src="${menu.gambar || 'https://via.placeholder.com/120'}" alt="menu">
+      <div class="menu-img-wrap">
+        <img src="${menu.gambar || 'https://via.placeholder.com/120'}" alt="menu" class="menu-img">
+      </div>
       <div class="fw-bold mb-1">${menu.nama || 'Tanpa Nama'}</div>
       <div class="text-sm mb-1">Panas: <b>Rp ${menu.hargapanas || '-'}</b></div>
       <div class="text-sm mb-1">Es: <b>Rp ${menu.hargaes || '-'}</b></div>
@@ -178,26 +161,40 @@ function renderMenuTable() {
   menus.forEach((menu, i) => {
     const div = document.createElement('div');
     div.className = 'menu-table-item';
+    div.setAttribute('onclick', `openHotColdOption(${i})`);
     div.innerHTML = `
-      <img src="${menu.gambar || 'https://via.placeholder.com/120'}" alt="menu">
-      <div class="fw-bold mb-1" style="color:var(--accent)">${menu.nama || 'Tanpa Nama'}</div>
-      <div class="flex gap-4 justify-center mt-2 mb-1">
-        <div style="text-align:center">
-          <span onclick="addToCart(${i}, 'hot')" title="Tambah Panas" style="cursor:pointer;font-size:2rem;color:#e60023;vertical-align:middle;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 4C12 4 16 9 16 13a4 4 0 1 1-8 0c0-4 4-9 4-9z" stroke="#e60023" stroke-width="2" fill="none"/><circle cx="12" cy="17" r="1.2" fill="#e60023"/></svg>
-          </span>
-          <div class="text-xs mt-1">Panas<br><b>Rp ${menu.hargapanas || '-'}</b></div>
-        </div>
-        <div style="text-align:center">
-          <span onclick="addToCart(${i}, 'cold')" title="Tambah Es" style="cursor:pointer;font-size:2rem;color:#3498db;vertical-align:middle;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 3c5 2 7 7.5 7 9.5a7 7 0 1 1-14 0C5 10.5 7 5 12 3z" stroke="#3498db" stroke-width="2" fill="none"/><circle cx="12" cy="17" r="1.2" fill="#3498db"/></svg>
-          </span>
-          <div class="text-xs mt-1">Es<br><b>Rp ${menu.hargaes || '-'}</b></div>
-        </div>
+      <div class="menu-img-wrap">
+        <img src="${menu.gambar || 'https://via.placeholder.com/120'}" alt="menu" class="menu-img">
       </div>
+      <div class="fw-bold mb-1" style="color:var(--accent)">${menu.nama || 'Tanpa Nama'}</div>
+      <div class="text-sm mb-1">Panas: <b>Rp ${menu.hargapanas || '-'}</b></div>
+      <div class="text-sm mb-1">Es: <b>Rp ${menu.hargaes || '-'}</b></div>
     `;
     menuTable.appendChild(div);
   });
+}
+
+// ========== HOT/COLD POPUP LOGIC ==========
+let selectedMenuIdx = null;
+function openHotColdOption(idx) {
+  selectedMenuIdx = idx;
+  document.querySelectorAll('.menu-table-item').forEach((el,i)=>{
+    el.classList.toggle('active', i===idx);
+  });
+  document.getElementById('hotColdPopup').style.display='flex';
+  document.getElementById('selectedMenuName').textContent = menus[idx].nama;
+}
+function closeHotCold() {
+  document.getElementById('hotColdPopup').style.display='none';
+  document.querySelectorAll('.menu-table-item').forEach(el=>el.classList.remove('active'));
+}
+function chooseHot() {
+  addToCart(selectedMenuIdx, 'hot');
+  closeHotCold();
+}
+function chooseCold() {
+  addToCart(selectedMenuIdx, 'cold');
+  closeHotCold();
 }
 
 // ========== Cart Logic ==========
@@ -210,16 +207,17 @@ function addToCart(i, type) {
   const exist = cart.find(c => c.name === name);
   if (exist) exist.qty++;
   else cart.push({ name, price, qty: 1 });
+  renderCartPopup();
   renderCart();
 }
 function renderCart() {
   updateCartBadge();
 }
-function removeFromCart(i) { cart.splice(i, 1); renderCart(); renderCartPopup(); }
-function increaseQty(i) { if (cart[i]) cart[i].qty++; renderCart(); renderCartPopup(); }
-function decreaseQty(i) { if (cart[i]) { if (cart[i].qty > 1) cart[i].qty--; else cart.splice(i, 1); } renderCart(); renderCartPopup(); }
+function removeFromCart(i) { cart.splice(i, 1); renderCartPopup(); renderCart(); }
+function increaseQty(i) { if (cart[i]) cart[i].qty++; renderCartPopup(); renderCart(); }
+function decreaseQty(i) { if (cart[i]) { if (cart[i].qty > 1) cart[i].qty--; else cart.splice(i, 1); } renderCartPopup(); renderCart(); }
 
-// ========== Keranjang Popup & Badge ==========
+// ========== Cart Popup & Badge ==========
 function updateCartBadge() {
   const badge = document.getElementById('cartBadge');
   if(!badge) return;
@@ -227,7 +225,6 @@ function updateCartBadge() {
   badge.textContent = count;
   badge.style.display = count > 0 ? '' : 'none';
 }
-
 function toggleCartPopup() {
   renderCartPopup();
   document.getElementById('cartPopup').classList.add('active');
@@ -237,24 +234,25 @@ function closeCartPopup(e) {
     document.getElementById('cartPopup').classList.remove('active');
   }
 }
+
+// ========== Render Cart Popup ==========
 function renderCartPopup() {
-  const list = document.getElementById('cartPopupList');
-  if (!list) return;
-  list.innerHTML = '';
-  let total = 0;
-  cart.forEach((item, i) => {
+  const list = cart.forEach((item, i) => {
     total += item.price * item.qty;
     list.innerHTML += `
       <li>
-        <span>${item.name}</span>
-        <span>
-          <button onclick="decreaseQty(${i});" class="btn" style="background:#eee;color:#444;padding:.1rem .7rem">-</button>
-          x${item.qty}
-          <button onclick="increaseQty(${i});" class="btn" style="background:#eee;color:#444;padding:.1rem .7rem">+</button>
-        </span>
-        <span>Rp ${item.price * item.qty}</span>
-        <button onclick="removeFromCart(${i});" class="btn" style="background:#e60023;padding:.1rem .7rem">🗑</button>
-      </li>`;
+        <div class="cart-item-info">
+          <span class="cart-item-title">${item.name}</span>
+          <span class="cart-item-total">Rp ${item.price * item.qty}</span>
+        </div>
+        <div class="cart-qty-group">
+          <button class="cart-qty-btn" onclick="decreaseQty(${i});">−</button>
+          <span class="cart-qty-val">${item.qty}</span>
+          <button class="cart-qty-btn" onclick="increaseQty(${i});">+</button>
+        </div>
+        <button class="cart-remove-btn" onclick="removeFromCart(${i});">🗑</button>
+      </li>
+    `;
   });
   document.getElementById('cartPopupTotal').textContent = total;
   updateCartBadge();
@@ -414,7 +412,6 @@ function renderRekap() {
 }
 
 function exportTransaksiExcel() {
-  // Asumsi sales = array transaksi
   const start = document.getElementById('rekapStart')?.value;
   const end = document.getElementById('rekapEnd')?.value;
   let data = sales;
@@ -430,7 +427,6 @@ function exportTransaksiExcel() {
       return (!start || tgl >= start) && (!end || tgl <= end);
     });
   }
-  // Export detail per item (tanpa user)
   const exportData = [];
   data.forEach(trx => {
     if (trx.items) trx.items.forEach(item => {
