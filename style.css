@@ -297,7 +297,7 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
   align-items: center;
   justify-content: space-between;
   position: sticky;
-  bottom: 28px;
+  bottom: 58px;
   z-index: 3;
   font-size: 1.14rem;
   font-weight: 600;
