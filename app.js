@@ -472,6 +472,15 @@ function setActiveNav(id) {
     if(el) el.classList.add('active');
   }
 }
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const target = document.getElementById(id+'Page');
+  if(target) target.classList.add('active');
+  const nav = document.getElementById('mainNav');
+  if(nav) nav.style.display = (id==='login'||id==='register') ? 'none' : '';
+}
+
 window.showPage = function(id) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   const target = document.getElementById(id+'Page');
