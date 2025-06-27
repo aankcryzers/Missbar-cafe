@@ -237,7 +237,11 @@ function closeCartPopup(e) {
 
 // ========== Render Cart Popup ==========
 function renderCartPopup() {
-  const list = cart.forEach((item, i) => {
+  const list = document.getElementById('cartPopupList');
+  if (!list) return;
+  list.innerHTML = '';
+  let total = 0;
+  cart.forEach((item, i) => {
     total += item.price * item.qty;
     list.innerHTML += `
       <li>
@@ -446,8 +450,9 @@ function exportTransaksiExcel() {
   XLSX.utils.book_append_sheet(wb, ws, "Transaksi");
   XLSX.writeFile(wb, `transaksi_${start||'all'}_${end||'all'}.xlsx`);
 }
+
 // ========== ONLOAD ==========
-window.onload = () => {
+window.onload = function() {
   loadSavedData();
   fetchMenus();
   const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -472,11 +477,16 @@ function setActiveNav(id) {
     if(el) el.classList.add('active');
   }
 }
-
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   const target = document.getElementById(id+'Page');
   if(target) target.classList.add('active');
   const nav = document.getElementById('mainNav');
   if(nav) nav.style.display = (id==='login'||id==='register') ? 'none' : '';
+  setActiveNav(id==='menu'?'navMenu':id==='kasir'?'navKasir':id==='rekap'?'navRekap':null);
+  if(id==='menu' && typeof renderMenuList==='function') renderMenuList();
+  if(id==='kasir' && typeof renderMenuTable==='function') renderMenuTable();
+  if(id==='kasir' && typeof renderCart==='function') renderCart();
+  if(id==='kasir' && typeof renderTempTrans==='function') renderTempTrans();
+  if(id==='rekap' && typeof renderRekap==='function') renderRekap();
 }
