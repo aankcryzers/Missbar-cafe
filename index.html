@@ -123,15 +123,17 @@
     <!-- Cart Bottom Sheet Popup -->
     <div id="cartPopup" class="cart-popup-bg" onclick="closeCartPopup(event)">
       <div class="cart-popup" onclick="event.stopPropagation()">
-        <h3 class="fw-bold mb-2">Keranjang</h3>
-        <ul id="cartPopupList" class="cart-list mb-2"></ul>
-        <div class="cart-total-info">
-          <span>Total: Rp <span id="cartPopupTotal">0</span></span>
-          <button onclick="checkoutCart()" class="btn cart-checkout-btn">Checkout</button>
+       <h3 class="fw-bold mb-2">Keranjang</h3>
+<div class="cart-total-info">
+  <span>Total: Rp <span id="cartPopupTotal">0</span></span>
+  <button onclick="checkoutCart()" class="btn cart-checkout-btn">Checkout</button>
+</div>
+<ul id="cartPopupList" class="cart-list mb-2"></ul>
         </div>
       </div>
     </div>
   </div>
+
 
   <!-- REKAP PAGE -->
   <div id="rekapPage" class="page">
