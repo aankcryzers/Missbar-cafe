@@ -63,8 +63,11 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
 /* --- Kasir Menu Card --- */
 .menu-table {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); /* kotak lebih proporsional */
   gap: 1rem;
+  max-width: 760px;     /* BATAS LEBAR agar tidak full */
+  margin: 0 auto 1.5rem auto; /* TENGAH */
+  padding: 0 10px;
 }
 .menu-table-item {
   background: #fff;
