@@ -186,6 +186,26 @@
     </div>
   </div>
 
+<!-- Tombol Tambah Menu -->
+<button onclick="openTambahMenu()" class="btn" style="background:var(--accent);">Tambah Menu</button>
+
+<!-- Popup Tambah Menu -->
+<div id="tambahMenuPopupBg" class="hotcold-popup-bg" style="display:none;">
+  <div class="hotcold-popup" style="min-width:300px;max-width:95vw;">
+    <h3 class="mb-3">Tambah Menu</h3>
+    <form id="tambahMenuForm">
+      <input type="text" class="input mb-2" placeholder="Nama menu" required>
+      <input type="number" class="input mb-2" placeholder="Harga" required>
+      <input type="text" class="input mb-2" placeholder="Kategori" required>
+      <!-- Tambah input lain sesuai kebutuhan -->
+      <div class="text-center mt-3">
+        <button type="submit" class="btn" style="background:var(--primary);color:#fff;">Simpan</button>
+        <button type="button" class="btn" style="background:#bbb;color:#fff;" onclick="closeTambahMenu()">Batal</button>
+      </div>
+    </form>
+  </div>
+</div>
+
   <!-- NAVIGATION BAR BAWAH -->
   <nav id="mainNav" class="nav-bottom" style="display:none">
     <button class="nav-btn" id="navMenu" onclick="showPage('menu')">
