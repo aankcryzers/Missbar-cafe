@@ -69,8 +69,10 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
   min-height: 210px;
 }
 .menu-table-item.active {
-  filter: blur(1px) brightness(0.93) opacity(0.65);
-  transform: scale(1.09);
+  filter: blur(1.5px) brightness(0.91) opacity(0.68);
+  transform: scale(1.10);
+  outline: 2.5px solid var(--accent);
+  box-shadow: 0 0 0 4px #b8326033;
   z-index: 12;
 }
 .menu-img-wrap {
@@ -99,30 +101,56 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
   position: fixed;
   inset: 0;
   z-index: 111;
-  background: rgba(0,0,0,0.18);
+  background: rgba(0,0,0,0.23);
+  backdrop-filter: blur(2.5px);
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: fadein .17s;
+  animation: fadein .18s;
+  transition: background .2s;
 }
 .hotcold-popup {
   background: #fff;
-  border-radius: 18px;
-  padding: 1.5rem 1.1rem;
-  box-shadow: 0 6px 32px #2223;
-  min-width: 200px;
+  border-radius: 22px;
+  padding: 2rem 1.5rem 1.4rem 1.5rem;
+  box-shadow: 0 8px 40px #0004, 0 1.5px 10px #e6002333;
+  min-width: 230px;
   min-height: 120px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.1rem;
+  gap: 1.2rem;
+  animation: popupUp .22s;
 }
 .hotcold-popup .btn {
-  min-width: 155px;
-  font-size: 1.08rem;
+  min-width: 160px;
+  font-size: 1.12rem;
+  border: none;
+  box-shadow: 0 2px 8px #b8326015;
+  margin-bottom: 0.15em;
+}
+.hotcold-popup .btn:nth-child(2) {
+  background: #e60023;
+  color: #fff;
+}
+.hotcold-popup .btn:nth-child(3) {
+  background: #3498db;
+  color: #fff;
+}
+.hotcold-popup .btn:nth-child(4) {
+  background: #aaa;
+  color: #fff;
 }
 @media (max-width: 540px) {
-  .hotcold-popup { min-width: 140px; }
+  .hotcold-popup { min-width: 140px; padding: 1.1rem 0.5rem; }
+}
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes popupUp {
+  from { transform: translateY(50px) scale(0.98);}
+  to   { transform: translateY(0) scale(1);}
 }
 
 /* --- Cart Popup Tinggi --- */
@@ -143,7 +171,7 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
   margin: 0 auto;
   background: #fff;
   border-radius: 18px 18px 0 0;
-  box-shadow: 0 -4px 32px #2223;
+  box-shadow: 0 -8px 44px #2225, 0 2.5px 14px #e6002322;
   padding: 18px 14px 12px 14px;
   min-height: 180px;
   max-height: var(--cart-popup-max-height);
@@ -153,10 +181,6 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-}
-@keyframes popupUp {
-  from { transform: translateY(100%);}
-  to {transform: translateY(0);}
 }
 @media (max-width:600px) {
   .cart-popup {
@@ -217,13 +241,14 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
   height: 36px;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, transform 0.11s;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .cart-qty-btn:active, .cart-qty-btn:focus {
   background: #ead2db;
+  transform: scale(1.09);
 }
 .cart-qty-val {
   min-width: 30px;
@@ -242,13 +267,14 @@ input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hov
   height: 32px;
   margin-left: 4px;
   cursor: pointer;
-  transition: background 0.13s;
+  transition: background 0.13s, transform 0.11s;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .cart-remove-btn:active, .cart-remove-btn:focus {
   background: #b83260;
+  transform: scale(1.09) rotate(-6deg);
 }
 @media (max-width: 600px) {
   .cart-list li {
